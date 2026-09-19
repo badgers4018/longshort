@@ -47,6 +47,12 @@ export const DEFAULTS: AppParams = {
   dischargeSensitivity: 0.8,
   dischargeSeverity: 3,
   showCounterfactual: true,
+  showPassiveCore: true,
+  showCits: false,
+  showHfEquity: true,
+  showHfLongs: true,
+  showHfDerivs: false,
+  includeDerivsInLeverage: false,
   tab: "fees",
 };
 

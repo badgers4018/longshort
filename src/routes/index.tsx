@@ -10,6 +10,7 @@ const TABS: TabId[] = [
   "history",
   "estimator",
   "reflexivity",
+  "industry",
 ];
 
 export const Route = createFileRoute("/")({

@@ -8,7 +8,15 @@ export type AxisKey =
   | "borrowCost"
   | "holdingPeriod";
 
-export type TabId = "fees" | "grid" | "wealth" | "cascade" | "history" | "estimator" | "reflexivity";
+export type TabId =
+  | "fees"
+  | "grid"
+  | "wealth"
+  | "cascade"
+  | "history"
+  | "estimator"
+  | "reflexivity"
+  | "industry";
 
 export type SharedParams = {
   equityBeta: number;
@@ -80,6 +88,15 @@ export type ReflexivityParams = {
   showCounterfactual: boolean;
 };
 
+export type IndustryParams = {
+  showPassiveCore: boolean;
+  showCits: boolean;
+  showHfEquity: boolean;
+  showHfLongs: boolean;
+  showHfDerivs: boolean;
+  includeDerivsInLeverage: boolean;
+};
+
 export type AppParams = SharedParams &
   BookParams &
   ConvexityParams &
@@ -87,7 +104,8 @@ export type AppParams = SharedParams &
   ShillerParams &
   GridParams &
   EstimatorParams &
-  ReflexivityParams & {
+  ReflexivityParams &
+  IndustryParams & {
     tab: TabId;
     showPassThrough: boolean;
   };

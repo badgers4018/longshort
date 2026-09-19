@@ -5,6 +5,7 @@ import { InlineRange } from "@/components/field";
 import { CascadeTab } from "@/components/tabs/cascade-tab";
 import { EstimatorTab } from "@/components/tabs/estimator-tab";
 import { FeeTab } from "@/components/tabs/fee-tab";
+import { IndustryTab } from "@/components/tabs/industry-tab";
 import { ReflexivityTab } from "@/components/tabs/reflexivity-tab";
 import { SensitivityTab } from "@/components/tabs/sensitivity-tab";
 import { ShillerTab } from "@/components/tabs/shiller-tab";
@@ -22,6 +23,7 @@ const TABS: { id: TabId; label: string }[] = [
   { id: "history", label: "Shiller windows" },
   { id: "estimator", label: "Estimator" },
   { id: "reflexivity", label: "Reflexivity" },
+  { id: "industry", label: "Industry" },
 ];
 
 const tabBtn =
@@ -76,7 +78,7 @@ export function AppShell({ urlTab }: { urlTab?: TabId }) {
         <div
           role="tablist"
           aria-label="Calculator tabs"
-          className="mb-6 grid grid-cols-2 border-2 border-navy sm:grid-cols-7"
+          className="mb-6 grid grid-cols-2 border-2 border-navy sm:grid-cols-4 xl:grid-cols-8"
         >
           {TABS.map((t) => (
             <button
@@ -163,6 +165,7 @@ export function AppShell({ urlTab }: { urlTab?: TabId }) {
           {tab === "history" ? <ShillerTab /> : null}
           {tab === "estimator" ? <EstimatorTab /> : null}
           {tab === "reflexivity" ? <ReflexivityTab /> : null}
+          {tab === "industry" ? <IndustryTab /> : null}
         </div>
 
         <footer className="mt-16 border-t border-line pt-10 text-center">
