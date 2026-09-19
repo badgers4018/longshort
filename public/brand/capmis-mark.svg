@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none" role="img" aria-label="Capital Misallocation">
+  <title>Capital Misallocation</title>
+  <g stroke="currentColor" stroke-linejoin="round" stroke-linecap="round">
+    <polygon points="120.000,18.000 208.307,69.000 208.307,171.000 120.000,222.000 31.693,171.000 31.693,69.000" stroke-width="3.2"/>
+    <polygon points="120.000,82.000 152.909,101.000 152.909,139.000 120.000,158.000 87.091,139.000 87.091,101.000" stroke-width="2.5"/>
+    <line x1="120.000" y1="82.000" x2="120.000" y2="39.500" stroke-width="2.5"/>
+    <line x1="152.909" y1="101.000" x2="189.675" y2="79.770" stroke-width="2.5"/>
+    <line x1="152.909" y1="139.000" x2="189.675" y2="160.230" stroke-width="2.5"/>
+    <line x1="120.000" y1="158.000" x2="120.000" y2="200.500" stroke-width="2.5"/>
+    <line x1="87.091" y1="139.000" x2="50.325" y2="160.230" stroke-width="2.5"/>
+    <line x1="87.091" y1="101.000" x2="50.325" y2="79.770" stroke-width="2.5"/>
+    <circle cx="120.000" cy="18.000" r="21.5" stroke-width="2.5"/>
+    <circle cx="208.307" cy="69.000" r="21.5" stroke-width="2.5"/>
+    <circle cx="208.307" cy="171.000" r="21.5" stroke-width="2.5"/>
+    <circle cx="120.000" cy="222.000" r="21.5" stroke-width="2.5"/>
+    <circle cx="31.693" cy="171.000" r="21.5" stroke-width="2.5"/>
+    <circle cx="31.693" cy="69.000" r="21.5" stroke-width="2.5"/>
+    <polygon points="120,92 146,120 120,148 94,120" stroke-width="1.8" fill="currentColor" fill-opacity="0.16"/>
+    <polygon points="138.385,101.615 138.385,138.385 101.615,138.385 101.615,101.615" transform="rotate(45 120 120)" stroke-width="1.8" fill="currentColor" fill-opacity="0.16"/>
+    <circle cx="120" cy="120" r="3.1" fill="currentColor" stroke="none"/>
+
+    <g transform="translate(120 18)" stroke-width="2.05">
+      <polygon points="0,-8.4 7.4,-4.2 7.4,4.2 0,8.4 -7.4,4.2 -7.4,-4.2"/>
+      <line x1="0" y1="0" x2="0" y2="-8.4"/>
+      <line x1="0" y1="0" x2="7.4" y2="4.2"/>
+      <line x1="0" y1="0" x2="-7.4" y2="4.2"/>
+    </g>
+
+    <g transform="translate(208.307 69)" stroke-width="2.05">
+      <rect x="-6.6" y="-6.6" width="13.2" height="13.2"/>
+      <rect x="-3.2" y="-3.2" width="6.4" height="6.4"/>
+    </g>
+
+    <g transform="translate(208.307 171)" stroke-width="2.05">
+      <polygon points="0,-8.6 8.6,6.6 -8.6,6.6"/>
+    </g>
+
+    <g transform="translate(120 222)" stroke-width="2.05">
+      <circle cx="0" cy="0" r="8.2"/>
+      <circle cx="0" cy="0" r="4.1"/>
+    </g>
+
+    <g transform="translate(31.693 171)" stroke-width="2.05">
+      <polygon points="0,0.2 -7.4,-7.8 7.4,-7.8"/>
+      <polygon points="0,-0.2 -7.4,7.8 7.4,7.8"/>
+    </g>
+
+    <g transform="translate(31.693 69)" stroke-width="2.05">
+      <polygon points="0,-8.6 7.5,4.5 -7.5,4.5"/>
+      <polygon points="0,8.6 7.5,-4.5 -7.5,-4.5"/>
+    </g>
+  </g>
+</svg>
