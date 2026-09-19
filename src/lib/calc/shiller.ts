@@ -146,3 +146,33 @@ export function ratioHistogram(windows: WindowResult[], bins = 24) {
   }
   return counts;
 }
+
+export function hedgedGeoAt(
+  w: WindowResult,
+  net: number,
+  alpha: number,
+  fee: number,
+  volRed: number,
+) {
+  const hedgedVol = w.betaVol * (1 - volRed / 100);
+  return net * w.betaArith + alpha - fee - 0.5 * (hedgedVol / 100) ** 2 * 100;
+}
+
+export function winRateAt(
+  windows: WindowResult[],
+  net: number,
+  alpha: number,
+  fee: number,
+  volRed: number,
+) {
+  if (windows.length === 0) return 0;
+  let wins = 0;
+  for (const w of windows) {
+    if (hedgedGeoAt(w, net, alpha, fee, volRed) > w.betaGeo) wins += 1;
+  }
+  return wins / windows.length;
+}
+
+export const GRID_FEES = [2, 3, 4, 5, 6, 7, 8];
+export const GRID_ALPHAS = [0, 2, 4, 6, 8, 10];
+

@@ -3,7 +3,6 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
-  Cell,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -13,11 +12,17 @@ import {
 import { Field } from "@/components/field";
 import { TabHeader, Stat } from "@/components/headline";
 import { ChartTip } from "@/components/charts/chart-tip";
-import { ratioHistogram, runShillerWindows } from "@/lib/calc/shiller";
-import { formatPct } from "@/lib/utils";
+import {
+  GRID_ALPHAS,
+  GRID_FEES,
+  ratioHistogram,
+  runShillerWindows,
+  winRateAt,
+} from "@/lib/calc/shiller";
+import { cn, formatPct } from "@/lib/utils";
 import { useParams } from "@/store/use-params";
 
-import { GOLD, LINE, MUTED, NAVY, OX, WIN } from "@/lib/palette";
+import { LINE, MUTED, NAVY } from "@/lib/palette";
 
 export function ShillerTab() {
   const p = useParams();
@@ -59,6 +64,25 @@ export function ShillerTab() {
       }));
   }, [result.windows]);
 
+  const grid = useMemo(() => {
+    return GRID_FEES.map((fee) =>
+      GRID_ALPHAS.map((alpha) => ({
+        fee,
+        alpha,
+        win: winRateAt(result.windows, p.netExposure, alpha, fee, p.hedgedVolReduction),
+      })),
+    );
+  }, [result.windows, p.netExposure, p.hedgedVolReduction]);
+
+  const hiFee = GRID_FEES.reduce(
+    (best, f, i) => (Math.abs(f - p.allInFee) < Math.abs(GRID_FEES[best] - p.allInFee) ? i : best),
+    0,
+  );
+  const hiAlpha = GRID_ALPHAS.reduce(
+    (best, a, i) => (Math.abs(a - p.shillerAlpha) < Math.abs(GRID_ALPHAS[best] - p.shillerAlpha) ? i : best),
+    0,
+  );
+
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
       <section ref={rootRef} className="space-y-6">
@@ -71,12 +95,12 @@ export function ShillerTab() {
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <Stat label="Windows" value={String(result.n)} hint={`${result.start} → ${result.end}`} />
-          <Stat label="Hedged book wins" value={formatPct(result.winRate * 100, 0)} tone="win" />
+          <Stat label="Hedged book wins" value={formatPct(result.winRate * 100, 0)} tone={result.winRate > 0 ? "win" : "oxblood"} />
           <Stat label="Median wealth ratio" value={`${result.medianRatio.toFixed(2)}×`} />
           <Stat
             label="Winning-window vol"
-            value={formatPct(result.winningVol, 0)}
-            hint={`Losing windows: ${formatPct(result.losingVol, 0)}`}
+            value={result.winRate > 0 ? formatPct(result.winningVol, 0) : "—"}
+            hint={result.winRate > 0 ? `Losing windows: ${formatPct(result.losingVol, 0)}` : `Losing windows: ${formatPct(result.losingVol, 0)}`}
           />
         </div>
 
@@ -84,22 +108,82 @@ export function ShillerTab() {
           <h3 className="text-muted mb-3 font-ui text-xs font-medium tracking-kicker uppercase">
             Share of windows the hedged book won, by decade
           </h3>
-          <div className="h-52 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-60">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={decade} margin={{ top: 8, right: 8, left: -12, bottom: 8 }}>
-                <CartesianGrid stroke={LINE} vertical={false} />
-                <XAxis dataKey="decade" tick={{ fill: MUTED, fontSize: 11 }} />
-                <YAxis tickFormatter={(v) => `${v}%`} tick={{ fill: MUTED, fontSize: 11 }} />
-                <ReferenceLine y={50} stroke={GOLD} strokeDasharray="4 4" />
-                <Tooltip content={<ChartTip format={(n) => `${Number(n).toFixed(0)}%`} />} />
-                <Bar dataKey="win" name="Win rate" radius={[3, 3, 0, 0]} isAnimationActive={false}>
-                  {decade.map((row) => (
-                    <Cell key={row.decade} fill={row.win >= 50 ? WIN : OX} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="grid grid-cols-5 gap-1 sm:grid-cols-8">
+            {decade.map((row) => (
+              <div
+                key={row.decade}
+                className={cn(
+                  "flex h-11 flex-col items-center justify-center rounded-xs",
+                  row.win >= 50 ? "bg-win text-cream" : row.win > 0 ? "bg-gold text-navy" : "bg-ox text-cream",
+                )}
+              >
+                <span className="font-ui text-[10px] font-medium tracking-kicker uppercase opacity-80">
+                  {row.decade}
+                </span>
+                <span className="tabular text-xs font-semibold">{row.win.toFixed(0)}%</span>
+              </div>
+            ))}
           </div>
+          {result.winRate === 0 ? (
+            <p className="text-muted mt-2 text-xs leading-5">
+              0 of {decade.length} decades. The cells aren't missing data — at {formatPct(p.allInFee, 0)} fees
+              and {formatPct(p.shillerAlpha, 0)} alpha the hedge never cleared the index.
+            </p>
+          ) : null}
+        </div>
+
+        <div>
+          <h3 className="text-muted mb-3 font-ui text-xs font-medium tracking-kicker uppercase">
+            Win rate across fee × alpha — {result.n} windows
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[420px] border-collapse text-center">
+              <thead>
+                <tr>
+                  <th className="text-muted w-24 pr-2 text-left font-ui text-xs font-medium tracking-wide">
+                    Fee \ Alpha
+                  </th>
+                  {GRID_ALPHAS.map((a) => (
+                    <th key={a} className="tabular text-muted px-0.5 pb-2 font-ui text-xs font-medium">
+                      {a}%
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {grid.map((row, fi) => (
+                  <tr key={GRID_FEES[fi]}>
+                    <th className="tabular pr-2 text-left font-ui text-xs font-semibold text-navy">
+                      {GRID_FEES[fi]}%
+                    </th>
+                    {row.map((cell, ai) => {
+                      const on = fi === hiFee && ai === hiAlpha;
+                      return (
+                        <td key={`${cell.fee}-${cell.alpha}`} className="p-0.5">
+                          <div
+                            className={cn(
+                              "flex h-11 items-center justify-center rounded-xs text-[12px] font-semibold tabular",
+                              cell.win >= 0.5 && "bg-win text-cream",
+                              cell.win > 0 && cell.win < 0.5 && "bg-gold text-navy",
+                              cell.win === 0 && "bg-ox text-cream",
+                              on && "ring-2 ring-navy ring-offset-1 ring-offset-paper",
+                            )}
+                            title={`${cell.win * 100}% of windows at ${cell.fee}% fees, ${cell.alpha}% alpha`}
+                          >
+                            {(cell.win * 100).toFixed(0)}%
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-muted mt-2 text-xs">
+            Navy ring is your current fee and alpha. Green: hedge wins ≥ half of history. Gold: some decades.
+            Oxblood: none.
+          </p>
         </div>
 
         <div>
@@ -135,10 +219,9 @@ export function ShillerTab() {
         <div className="rounded-lg bg-cream px-5 py-4 text-sm leading-6 text-navy">
           <p className="font-semibold">Where the long-short book won</p>
           <p className="text-muted mt-1">
-            Winning {result.windowYears}-year windows had median geometric equity return of{" "}
-            {formatPct(result.winningReturn)} and vol of {formatPct(result.winningVol, 0)}. Losing windows:{" "}
-            {formatPct(result.losingReturn)} return, {formatPct(result.losingVol, 0)} vol. The hedge earns
-            its keep in high-vol, sideways markets — and still often fails to clear the fee load.
+            {result.winRate === 0
+              ? `None of the ${result.n} ${result.windowYears}-year windows since 1871. Median terminal wealth is ${result.medianRatio.toFixed(2)}× the index. Losing windows ran ${formatPct(result.losingReturn)} geometric at ${formatPct(result.losingVol, 0)} vol. Raise alpha or cut fees in the grid — the arithmetic does not negotiate.`
+              : `Winning ${result.windowYears}-year windows had median geometric equity return of ${formatPct(result.winningReturn)} and vol of ${formatPct(result.winningVol, 0)}. Losing windows: ${formatPct(result.losingReturn)} return, ${formatPct(result.losingVol, 0)} vol. The hedge earns its keep in high-vol, sideways markets — and still often fails to clear the fee load.`}
           </p>
         </div>
       </section>
