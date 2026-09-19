@@ -145,7 +145,7 @@ export function ReflexivityTab() {
                   tick={CHART_TICK}
                   tickFormatter={(v) => `$${formatChartNum(Number(v), 0)}B`}
                 />
-                <Tooltip content={<ChartTip format={(n) => formatChartNum(n, 2)} />} />
+                <Tooltip cursor={{ fill: "rgba(28,28,28,0.04)" }} content={<ChartTip format={(n) => formatChartNum(n, 2)} />} />
                 <Legend wrapperStyle={{ fontSize: 13, fontFamily: "IBM Plex Sans, sans-serif" }} />
                 {result.dischargeMonth ? (
                   <ReferenceArea
@@ -214,8 +214,8 @@ export function ReflexivityTab() {
             </ResponsiveContainer>
           </div>
           <p className="text-muted mt-2 text-sm">
-            Capital chases measured Sharpe. Crowding compresses the alpha that generated it. Tail exposure climbs in a
-            quantity nobody reports. Measured Sharpe is {pre.toFixed(2)} right up until it discharges.
+            Watch the red line (stored gamma) climb while the dark line (Sharpe) stays flat. That gap is the system
+            lying to itself. The red band is when it stops.
           </p>
         </div>
 
@@ -228,49 +228,51 @@ export function ReflexivityTab() {
 
         {mc ? (
           <>
-            <div>
-              <h3 className="text-muted mb-3 font-ui text-sm font-medium tracking-kicker uppercase">
-                Months to first discharge — 1,000 runs
-              </h3>
-              <div className="h-40 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-48">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={mc.histogram} margin={{ top: 8, right: 8, left: -12, bottom: 8 }}>
-                    <CartesianGrid stroke={LINE} vertical={false} />
-                    <XAxis
-                      dataKey="x"
-                      tick={CHART_TICK}
-                      tickFormatter={(v) => (Number(v) > 240 ? "None" : String(v))}
-                    />
-                    <YAxis tick={CHART_TICK} />
-                    <Tooltip content={<ChartTip format={(n) => formatChartNum(n, 0)} />} />
-                    <Bar dataKey="n" name="Runs" fill={NAVY} radius={[2, 2, 0, 0]} isAnimationActive={false} />
-                  </BarChart>
-                </ResponsiveContainer>
+            <div className="grid gap-6 md:grid-cols-2">
+              <div>
+                <h3 className="text-muted mb-3 font-ui text-sm font-medium tracking-kicker uppercase">
+                  Months to first discharge — 1,000 runs
+                </h3>
+                <div className="h-40 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-48">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={mc.histogram} margin={{ top: 8, right: 8, left: -12, bottom: 8 }}>
+                      <CartesianGrid stroke={LINE} vertical={false} />
+                      <XAxis
+                        dataKey="x"
+                        tick={CHART_TICK}
+                        tickFormatter={(v) => (Number(v) > 240 ? "None" : String(v))}
+                      />
+                      <YAxis tick={CHART_TICK} />
+                      <Tooltip cursor={{ fill: "rgba(28,28,28,0.04)" }} content={<ChartTip format={(n) => formatChartNum(n, 0)} />} />
+                      <Bar dataKey="n" name="Runs" fill={NAVY} radius={[2, 2, 0, 0]} isAnimationActive={false} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-muted mb-3 font-ui text-sm font-medium tracking-kicker uppercase">
+                  Median terminal wealth — reflexive vs. counterfactual
+                </h3>
+                <div className="h-40 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-48">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={compare} layout="vertical" margin={{ top: 8, right: 16, left: 8, bottom: 8 }}>
+                      <XAxis type="number" tick={CHART_TICK} tickFormatter={(v) => `$${formatChartNum(Number(v), 0)}B`} />
+                      <YAxis type="category" dataKey="name" width={120} tick={{ ...CHART_TICK, fill: NAVY }} />
+                      <Tooltip cursor={{ fill: "rgba(28,28,28,0.04)" }} content={<ChartTip format={(n) => `$${formatChartNum(n, 1)}B`} />} />
+                      <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={22} isAnimationActive={false}>
+                        {compare.map((e) => (
+                          <Cell key={e.name} fill={e.fill} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </div>
-            <div>
-              <h3 className="text-muted mb-3 font-ui text-sm font-medium tracking-kicker uppercase">
-                Median terminal wealth — reflexive vs. counterfactual
-              </h3>
-              <div className="h-40 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={compare} layout="vertical" margin={{ top: 8, right: 16, left: 8, bottom: 8 }}>
-                    <XAxis type="number" tick={CHART_TICK} tickFormatter={(v) => `$${formatChartNum(Number(v), 0)}B`} />
-                    <YAxis type="category" dataKey="name" width={120} tick={{ ...CHART_TICK, fill: NAVY }} />
-                    <Tooltip content={<ChartTip format={(n) => `$${formatChartNum(n, 1)}B`} />} />
-                    <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={22} isAnimationActive={false}>
-                      {compare.map((e) => (
-                        <Cell key={e.name} fill={e.fill} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-              <p className="text-muted mt-2 text-sm">
-                Counterfactual: same alpha, same beta, no convex flows, no crowding, no discharge. If the reflexive
-                system beats this, the model has a bug.
-              </p>
-            </div>
+            <p className="text-muted text-sm">
+              The counterfactual uses the same returns with no crowding and no discharge. The gap between the two bars is
+              the cost of the reflexive loop.
+            </p>
           </>
         ) : null}
       </section>

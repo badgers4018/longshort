@@ -56,7 +56,7 @@ export function AppShell() {
         <div
           role="tablist"
           aria-label="Calculator tabs"
-          className="mb-6 grid grid-cols-2 border-2 border-navy sm:grid-cols-4 lg:grid-cols-7"
+          className="mb-6 grid grid-cols-2 border-2 border-navy sm:grid-cols-7"
         >
           {TABS.map((t) => (
             <button

@@ -97,7 +97,7 @@ export function EstimatorTab() {
                 <CartesianGrid stroke={LINE} vertical={false} />
                 <XAxis dataKey="months" tick={CHART_TICK} />
                 <YAxis tick={CHART_TICK} tickFormatter={(v) => `${formatChartNum(Number(v), 0)}%`} />
-                <Tooltip content={<ChartTip format={(n) => `${formatChartNum(n, 1)}%`} />} />
+                <Tooltip cursor={{ fill: "rgba(28,28,28,0.04)" }} content={<ChartTip format={(n) => `${formatChartNum(n, 1)}%`} />} />
                 <Legend wrapperStyle={{ fontSize: 13, fontFamily: "IBM Plex Sans, sans-serif" }} />
                 <ReferenceLine
                   x={60}
@@ -149,9 +149,8 @@ export function EstimatorTab() {
             </ResponsiveContainer>
           </div>
           <p className="text-muted mt-2 text-sm">
-            At {p.trackRecord} months, a screen at Sharpe ≥ {p.screenThreshold.toFixed(2)} selects {result.selected}{" "}
-            managers. {result.falsePositiveRate.toFixed(0)}% have true Sharpe below 0.50. The sample cannot distinguish
-            skill from luck.
+            Move the track-record slider right and watch the false-positive rate drop — that's how long it takes for the
+            screen to actually work.
           </p>
         </div>
 
@@ -171,7 +170,7 @@ export function EstimatorTab() {
                   tickFormatter={(v) => formatChartNum(Number(v), 1)}
                 />
                 <YAxis tick={CHART_TICK} />
-                <Tooltip content={<ChartTip format={(n) => formatChartNum(n, 0)} />} />
+                <Tooltip cursor={{ fill: "rgba(28,28,28,0.04)" }} content={<ChartTip format={(n) => formatChartNum(n, 0)} />} />
                 <ReferenceLine
                   x={0.5}
                   stroke={OX}
@@ -188,6 +187,10 @@ export function EstimatorTab() {
               </BarChart>
             </ResponsiveContainer>
           </div>
+          <p className="text-muted mt-2 text-sm">
+            The gold line is your screen. Everything to its left passed — and the red line shows how many of them are
+            below a true Sharpe of 0.50.
+          </p>
         </div>
       </section>
 
