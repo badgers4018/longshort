@@ -13,7 +13,7 @@ import {
 import { Field, Toggle } from "@/components/field";
 import { TabHeader, Stat } from "@/components/headline";
 import { ChartTip } from "@/components/charts/chart-tip";
-import { fromApp, fullBreakdown } from "@/lib/calc/fees";
+import { breakEvenAlpha, fromApp, fullBreakdown, unleveredBook } from "@/lib/calc/fees";
 import { formatPct } from "@/lib/utils";
 import { useParams } from "@/store/use-params";
 
@@ -23,6 +23,8 @@ export function FeeTab() {
   const p = useParams();
   const rootRef = useRef<HTMLElement>(null);
   const d = useMemo(() => fullBreakdown(fromApp(p)), [p]);
+  const unlevBe = useMemo(() => breakEvenAlpha(unleveredBook(fromApp(p))), [p]);
+  const leverageGap = d.breakEvenAlpha - unlevBe;
 
   const waterfall = [
     { name: "Alpha", value: p.grossAlpha, fill: GOLD },
@@ -76,6 +78,26 @@ export function FeeTab() {
             hint={`${p.holdingPeriod}-year terminal vs. index`}
           />
         </div>
+
+        <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+          <Stat
+            label="This book"
+            value={formatPct(d.breakEvenAlpha)}
+            tone="oxblood"
+            hint={`${p.netExposure.toFixed(1)}× net · ${d.shortExposure.toFixed(2)}× short`}
+          />
+          <Stat
+            label="Unlevered, no short"
+            value={formatPct(unlevBe)}
+            tone="gold"
+            hint="Net 1.0×, borrow 0, same fee contract"
+          />
+        </div>
+        <p className="text-muted text-sm leading-relaxed">
+          {p.netExposure < 0.95
+            ? `Move net exposure to 1.0. The extra ${formatPct(leverageGap)} is the ${p.netExposure.toFixed(1)}× net and the borrow on the short — leverage, not the ${p.mgmtFee.toFixed(1)}-and-${p.incentiveFee.toFixed(0)}.`
+            : "Net is 1.0 — this is the unlevered book. What's left of break-even is fees and ½σ² drag."}
+        </p>
 
         <div>
           <h3 className="mb-3 font-ui text-sm font-medium tracking-kicker text-muted uppercase">From gross alpha to net geometric</h3>
@@ -181,7 +203,7 @@ export function FeeTab() {
       <aside className="space-y-4 rounded-lg bg-cream p-5">
         <h3 className="font-display text-title font-medium text-navy">The book</h3>
         <Field label="Gross alpha" value={p.grossAlpha} min={0} max={20} step={0.5} onChange={(v) => set("grossAlpha", v)} format={(v) => formatPct(v)} />
-        <Field label="Net exposure" value={p.netExposure} min={0} max={1} step={0.1} onChange={(v) => set("netExposure", v)} format={(v) => v.toFixed(1)} />
+        <Field label="Net exposure" value={p.netExposure} min={0} max={1} step={0.1} onChange={(v) => set("netExposure", v)} format={(v) => v.toFixed(1)} hint="0.5 owns half the index. 1.0 is unlevered." />
         <Field label="Gross exposure" value={p.grossExposure} min={1} max={4} step={0.1} onChange={(v) => set("grossExposure", v)} format={(v) => v.toFixed(1)} />
         <Field label="Portfolio volatility" value={p.portfolioVol} min={2} max={30} step={1} onChange={(v) => set("portfolioVol", v)} format={(v) => formatPct(v, 0)} />
         <Field label="Borrow — GC" value={p.borrowGcBps} min={0} max={100} step={5} onChange={(v) => set("borrowGcBps", v)} format={(v) => `${v} bps`} />

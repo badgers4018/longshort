@@ -169,3 +169,8 @@ export function fromApp(p: AppParams): FeeInputs {
     holdingPeriod: p.holdingPeriod,
   };
 }
+
+/** Fully invested long: net 1.0, no short, so borrow is zero. Same fee contract. */
+export function unleveredBook(input: FeeInputs): FeeInputs {
+  return { ...input, netExposure: 1, grossExposure: 1 };
+}

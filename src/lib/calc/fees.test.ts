@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { breakEvenAlpha, decompose, type FeeInputs } from "./fees.ts";
+import { breakEvenAlpha, decompose, unleveredBook, type FeeInputs } from "./fees.ts";
 
 const input: FeeInputs = {
   equityBeta: 9,
@@ -13,10 +13,10 @@ const input: FeeInputs = {
   borrowGcBps: 25,
   borrowCrowdedBps: 300,
   crowdedWeight: 20,
-  mgmtFee: 2,
+  mgmtFee: 1.5,
   incentiveFee: 20,
   podNetting: true,
-  passThrough: 1,
+  passThrough: 0,
   holdingPeriod: 10,
 };
 
@@ -56,4 +56,11 @@ test("no netting raises the incentive bill", () => {
 test("variance drag is ½σ²", () => {
   const d = decompose(input);
   assert.ok(Math.abs(d.varDrag - 0.5 * 0.08 * 0.08 * 100) < 1e-9);
+});
+
+test("unlevered book needs less alpha than a 0.5-net short book", () => {
+  const book = breakEvenAlpha(input);
+  const unlev = breakEvenAlpha(unleveredBook(input));
+  assert.ok(unlev < book, `${unlev} !< ${book}`);
+  assert.ok(unlev > 1 && unlev < 5, `unlev=${unlev}`);
 });
