@@ -113,6 +113,22 @@ export function AppShell() {
               Reset
             </Button>
           </div>
+          <details className="mt-4 rounded-lg bg-cream px-5">
+            <summary className="min-h-11 cursor-pointer py-3 font-ui text-xs font-semibold tracking-kicker text-navy uppercase">
+              Defaults
+            </summary>
+            <p className="text-muted pb-2 text-sm leading-6">
+              These are starting values. Move any slider; the indictment is yours.
+            </p>
+            <ul className="text-muted list-disc pb-4 pl-5 text-sm leading-6">
+              <li>10-year hold</li>
+              <li>2-and-20, pod-level netting on, 1% pass-through</li>
+              <li>½σ² variance drag — conservative if the book is left-tailed</li>
+              <li>Monte Carlo seed 20260910, 10,000 shared draws</li>
+              <li>Cascade impact k = 0.09</li>
+              <li>Shiller real total returns, 1871–2023</li>
+            </ul>
+          </details>
         </div>
 
         <div role="tabpanel" id={`panel-${p.tab}`} aria-labelledby={`tab-${p.tab}`}>

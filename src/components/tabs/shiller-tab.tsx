@@ -36,6 +36,11 @@ export function ShillerTab() {
   );
 
   const hist = useMemo(() => ratioHistogram(result.windows), [result.windows]);
+  const histDomain = useMemo((): [number, number] => {
+    if (hist.length === 0) return [0.5, 1.5];
+    const xs = hist.map((h) => h.x);
+    return [Math.min(1, ...xs), Math.max(1, ...xs)];
+  }, [hist]);
 
   const decade = useMemo(() => {
     const buckets = new Map<number, { n: number; wins: number }>();
@@ -103,11 +108,23 @@ export function ShillerTab() {
           </h3>
           <div className="h-44 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={hist} margin={{ top: 8, right: 8, left: -12, bottom: 8 }}>
+              <BarChart data={hist} margin={{ top: 16, right: 8, left: -12, bottom: 8 }}>
                 <CartesianGrid stroke={LINE} vertical={false} />
-                <XAxis dataKey="x" tickFormatter={(v) => Number(v).toFixed(1)} interval={4} tick={{ fill: MUTED, fontSize: 11 }} />
+                <XAxis
+                  dataKey="x"
+                  type="number"
+                  domain={histDomain}
+                  tickFormatter={(v) => Number(v).toFixed(1)}
+                  tick={{ fill: MUTED, fontSize: 11 }}
+                />
                 <YAxis tick={{ fill: MUTED, fontSize: 11 }} />
-                <ReferenceLine x={1} stroke={NAVY} strokeDasharray="3 3" />
+                <ReferenceLine
+                  x={1}
+                  stroke={NAVY}
+                  strokeDasharray="4 4"
+                  strokeWidth={1.5}
+                  label={{ value: "1.0×", position: "top", fill: MUTED, fontSize: 10 }}
+                />
                 <Tooltip content={<ChartTip />} />
                 <Bar dataKey="n" name="Windows" fill={NAVY} radius={[3, 3, 0, 0]} isAnimationActive={false} />
               </BarChart>

@@ -13,6 +13,7 @@ export type McSummary = {
   p5: number;
   p25: number;
   p75: number;
+  p95: number;
   winRate: number;
   medianLog: number;
   sharpe: number;
@@ -29,6 +30,7 @@ export type McResult = {
   crossoverYear: number | null;
   headlineId: StrategyId;
   bins: number[];
+  beatBetaRate: number;
 };
 
 function percentile(sorted: number[], p: number) {
@@ -86,6 +88,7 @@ export function runMonteCarlo(
   const arithLs: number[] = [];
   const logLs: number[] = [];
   const wins = [0, 0, 0];
+  let beatsBeta = 0;
   const medianPath2: number[] = new Array(years + 1).fill(0);
   const medianPath3: number[] = new Array(years + 1).fill(0);
   // Store yearly log-wealth snapshots for crossover (accumulate then percentile each year).
@@ -131,6 +134,7 @@ export function runMonteCarlo(
     const trio = [w1, w2, w3];
     const best = trio[0] >= trio[1] && trio[0] >= trio[2] ? 0 : trio[1] >= trio[2] ? 1 : 2;
     wins[best] += 1;
+    if (w2 > w1) beatsBeta += 1;
   }
 
   for (let t = 0; t <= years; t++) {
@@ -176,6 +180,7 @@ export function runMonteCarlo(
       p5: percentile(sortedW, 0.05),
       p25: percentile(sortedW, 0.25),
       p75: percentile(sortedW, 0.75),
+      p95: percentile(sortedW, 0.95),
       winRate: wins[i] / paths,
       medianLog: percentile(sortedLog, 0.5),
       sharpe: sharpeOf(means[i], vols[i], rf),
@@ -187,5 +192,5 @@ export function runMonteCarlo(
 
   const headlineId = summaries.reduce((best, s) => (s.winRate > best.winRate ? s : best)).id;
 
-  return { seed, years, paths, summaries, crossoverYear, headlineId, bins };
+  return { seed, years, paths, summaries, crossoverYear, headlineId, bins, beatBetaRate: beatsBeta / paths };
 }

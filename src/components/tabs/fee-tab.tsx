@@ -83,6 +83,13 @@ export function FeeTab() {
                 <CartesianGrid stroke={LINE} vertical={false} />
                 <XAxis dataKey="name" tick={{ fill: MUTED, fontSize: 10 }} interval={0} height={48} />
                 <YAxis tick={{ fill: MUTED, fontSize: 11 }} tickFormatter={(v) => `${v}%`} />
+                <ReferenceLine
+                  y={d.betaGeo}
+                  stroke={NAVY}
+                  strokeDasharray="4 4"
+                  strokeWidth={1.5}
+                  label={{ value: "Index", fill: MUTED, fontSize: 10, position: "insideTopRight" }}
+                />
                 <Tooltip
                   cursor={{ fill: "rgba(28,28,28,0.04)" }}
                   content={<ChartTip format={(n) => formatPct(n)} />}
@@ -96,6 +103,9 @@ export function FeeTab() {
               </BarChart>
             </ResponsiveContainer>
           </div>
+          <p className="text-muted mt-2 text-xs">
+            Dashed line is unlevered-beta geometric — the index match. Last bar lands at net geometric.
+          </p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">

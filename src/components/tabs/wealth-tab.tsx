@@ -101,7 +101,9 @@ export function WealthTab() {
                 <span className="flex items-center gap-1.5 text-gold-deep">
                   <span className="inline-block h-px w-3.5 bg-gold" /> Convexity
                 </span>
-                <span className="text-muted font-normal normal-case tracking-normal">Dashed lines mark each median</span>
+                <span className="text-muted font-normal normal-case tracking-normal">
+                  Dashed navy is the index match. Faint oxblood ticks are long-short 5th–95th.
+                </span>
               </div>
               <div className="h-56 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-64">
                 <ResponsiveContainer width="100%" height="100%">
@@ -110,6 +112,12 @@ export function WealthTab() {
                     <XAxis dataKey="x" type="number" domain={["dataMin", "dataMax"]} tick={{ fill: MUTED, fontSize: 11 }} tickFormatter={(v) => Number(v).toFixed(1)} />
                     <YAxis hide domain={[0, "auto"]} />
                     <Tooltip content={<ChartTip />} />
+                    {ls && ls.p5 > 0 ? (
+                      <ReferenceLine x={Math.log(ls.p5)} stroke={OX} strokeDasharray="2 3" strokeOpacity={0.35} />
+                    ) : null}
+                    {ls && ls.p95 > 0 ? (
+                      <ReferenceLine x={Math.log(ls.p95)} stroke={OX} strokeDasharray="2 3" strokeOpacity={0.35} />
+                    ) : null}
                     {result.summaries.map((s) => (
                       <ReferenceLine
                         key={s.id}
@@ -117,6 +125,11 @@ export function WealthTab() {
                         stroke={s.id === "beta" ? NAVY : s.id === "longshort" ? OX : GOLD}
                         strokeDasharray="4 4"
                         strokeWidth={1.5}
+                        label={
+                          s.id === "beta"
+                            ? { value: "Index", position: "insideTopRight", fill: MUTED, fontSize: 10 }
+                            : undefined
+                        }
                       />
                     ))}
                     <Bar dataKey="beta" name="Unlevered beta" fill={NAVY} fillOpacity={0.55} isAnimationActive={false} />
@@ -136,6 +149,7 @@ export function WealthTab() {
                     <th className="pb-2 font-semibold">5th</th>
                     <th className="pb-2 font-semibold">25th</th>
                     <th className="pb-2 font-semibold">75th</th>
+                    <th className="pb-2 font-semibold">95th</th>
                     <th className="pb-2 font-semibold">Win rate</th>
                     <th className="pb-2 font-semibold">Sharpe</th>
                   </tr>
@@ -148,6 +162,7 @@ export function WealthTab() {
                       <td className="tabular py-2.5">{s.p5.toFixed(2)}×</td>
                       <td className="tabular py-2.5">{s.p25.toFixed(2)}×</td>
                       <td className="tabular py-2.5">{s.p75.toFixed(2)}×</td>
+                      <td className="tabular py-2.5">{s.p95.toFixed(2)}×</td>
                       <td className="tabular py-2.5">{(s.winRate * 100).toFixed(1)}%</td>
                       <td className="tabular py-2.5">{s.sharpe.toFixed(2)}</td>
                     </tr>
@@ -177,9 +192,10 @@ export function WealthTab() {
                 />
               ) : null}
               <Stat
-                label="Skew"
-                value={p.skew.toFixed(2)}
-                hint="Strategy 2 draws from a skew-normal, not a lognormal."
+                label="P(long-short beats beta)"
+                value={`${(result.beatBetaRate * 100).toFixed(0)}%`}
+                tone={result.beatBetaRate >= 0.5 ? "win" : "oxblood"}
+                hint="Share of paths where the net-of-fee book finishes richer than the index"
               />
             </div>
           </>
