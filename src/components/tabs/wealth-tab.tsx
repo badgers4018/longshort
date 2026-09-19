@@ -147,38 +147,39 @@ export function WealthTab() {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[520px] text-left text-base sm:text-sm">
+              <table className="w-full min-w-[640px] text-left text-sm">
                 <thead>
-                  <tr className="text-muted font-ui text-sm tracking-kicker uppercase">
-                    <th className="pb-2 font-semibold">Strategy</th>
-                    <th className="pb-2 font-semibold">Median</th>
-                    <th className="pb-2 font-semibold">5th</th>
-                    <th className="pb-2 font-semibold">25th</th>
-                    <th className="pb-2 font-semibold">75th</th>
-                    <th className="pb-2 font-semibold">95th</th>
-                    <th className="pb-2 font-semibold">Win rate</th>
-                    <th className="pb-2 font-semibold">Sharpe</th>
+                  <tr className="text-muted font-ui text-xs tracking-kicker uppercase">
+                    <th className="pr-4 pb-2 font-semibold">Strategy</th>
+                    <th className="px-2 pb-2 font-semibold">Median</th>
+                    <th className="px-2 pb-2 font-semibold">5th</th>
+                    <th className="px-2 pb-2 font-semibold">25th</th>
+                    <th className="px-2 pb-2 font-semibold">75th</th>
+                    <th className="px-2 pb-2 font-semibold">95th</th>
+                    <th className="px-2 pb-2 font-semibold">Win rate</th>
+                    <th className="pl-2 pb-2 font-semibold">Sharpe</th>
                   </tr>
                 </thead>
                 <tbody>
                   {result.summaries.map((s) => (
                     <tr key={s.id} className="border-t border-line">
-                      <td className="py-2.5 font-medium text-navy">{s.label}</td>
-                      <td className="tabular py-2.5">{s.median.toFixed(2)}×</td>
-                      <td className="tabular py-2.5">{s.p5.toFixed(2)}×</td>
-                      <td className="tabular py-2.5">{s.p25.toFixed(2)}×</td>
-                      <td className="tabular py-2.5">{s.p75.toFixed(2)}×</td>
-                      <td className="tabular py-2.5">{s.p95.toFixed(2)}×</td>
-                      <td className="tabular py-2.5">{(s.winRate * 100).toFixed(1)}%</td>
-                      <td className="tabular py-2.5">{s.sharpe.toFixed(2)}</td>
+                      <td className="pr-4 py-2 font-medium text-navy">{s.label}</td>
+                      <td className="tabular px-2 py-2">{s.median.toFixed(2)}×</td>
+                      <td className="tabular px-2 py-2">{s.p5.toFixed(2)}×</td>
+                      <td className="tabular px-2 py-2">{s.p25.toFixed(2)}×</td>
+                      <td className="tabular px-2 py-2">{s.p75.toFixed(2)}×</td>
+                      <td className="tabular px-2 py-2">{s.p95.toFixed(2)}×</td>
+                      <td className="tabular px-2 py-2">{(s.winRate * 100).toFixed(1)}%</td>
+                      <td className="tabular pl-2 py-2">{s.sharpe.toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-2 gap-x-6 gap-y-4 md:grid-cols-3">
               <Stat
+                size="sm"
                 label="Crossover"
                 value={
                   result.crossoverYear === 1
@@ -191,6 +192,7 @@ export function WealthTab() {
               />
               {ls ? (
                 <Stat
+                  size="sm"
                   label="True variance drag"
                   value={formatPct(ls.trueDrag, 2)}
                   tone="oxblood"
@@ -198,6 +200,7 @@ export function WealthTab() {
                 />
               ) : null}
               <Stat
+                size="sm"
                 label="P(long-short beats beta)"
                 value={`${(result.beatBetaRate * 100).toFixed(0)}%`}
                 tone={result.beatBetaRate >= 0.5 ? "win" : "oxblood"}

@@ -45,11 +45,13 @@ export function Stat({
   value,
   tone = "ink",
   hint,
+  size = "lg",
 }: {
   label: string;
   value: string;
   tone?: "ink" | "gold" | "oxblood" | "win";
   hint?: string;
+  size?: "lg" | "sm";
 }) {
   const color =
     tone === "gold"
@@ -62,7 +64,7 @@ export function Stat({
   return (
     <div className="min-w-0">
       <div className="text-muted font-ui text-sm font-medium tracking-kicker uppercase">{label}</div>
-      <div className={`tabular mt-1 font-display text-2xl font-medium tracking-tight ${color}`}>{value}</div>
+      <div className={`tabular mt-1 font-display font-medium tracking-tight ${size === "sm" ? "text-xl" : "text-2xl"} ${color}`}>{value}</div>
       {hint ? <div className="text-muted mt-1 text-sm leading-snug">{hint}</div> : null}
     </div>
   );
