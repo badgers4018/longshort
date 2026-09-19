@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { ChartTip } from "@/components/charts/chart-tip";
 import { HORIZON, runReflexOnce, runReflexivity, summarizeReflexMc, type ReflexMonteCarlo } from "@/lib/calc/reflexivity";
 import { MASTER_SEED } from "@/lib/calc/rng";
-import { CHART_TICK, GOLD, LINE, MUTED, NAVY, OX } from "@/lib/palette";
+import { CHART_TICK, GOLD, LINE, MUTED, NAVY, OX, CHART_LEGEND } from "@/lib/palette";
 import { formatChartNum, formatPct } from "@/lib/utils";
 import { useParams } from "@/store/use-params";
 
@@ -135,7 +135,7 @@ export function ReflexivityTab() {
           </h3>
           <div className="h-72 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={result.months} margin={{ top: 8, right: 12, left: -8, bottom: 8 }}>
+              <LineChart data={result.months} margin={{ top: 8, right: 12, left: -8, bottom: 28 }}>
                 <CartesianGrid stroke={LINE} vertical={false} />
                 <XAxis dataKey="month" tick={CHART_TICK} />
                 <YAxis yAxisId="l" tick={CHART_TICK} tickFormatter={(v) => formatChartNum(Number(v), 1)} />
@@ -146,7 +146,7 @@ export function ReflexivityTab() {
                   tickFormatter={(v) => `$${formatChartNum(Number(v), 0)}B`}
                 />
                 <Tooltip cursor={{ fill: "rgba(28,28,28,0.04)" }} content={<ChartTip format={(n) => formatChartNum(n, 2)} />} />
-                <Legend wrapperStyle={{ fontSize: 13, fontFamily: "IBM Plex Sans, sans-serif" }} />
+                <Legend iconSize={CHART_LEGEND.iconSize} wrapperStyle={CHART_LEGEND.wrapperStyle} />
                 {result.dischargeMonth ? (
                   <ReferenceArea
                     yAxisId="l"

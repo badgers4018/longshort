@@ -24,7 +24,7 @@ import {
 } from "@/lib/calc/estimator";
 import { MASTER_SEED } from "@/lib/calc/rng";
 import type { ReturnDist } from "@/lib/calc/types";
-import { CHART_TICK, GOLD, LINE, MUTED, NAVY, OX, PAPER } from "@/lib/palette";
+import { CHART_TICK, GOLD, LINE, MUTED, NAVY, OX, PAPER, CHART_LEGEND } from "@/lib/palette";
 import { formatChartNum } from "@/lib/utils";
 import { useParams } from "@/store/use-params";
 
@@ -96,12 +96,12 @@ export function EstimatorTab() {
           </h3>
           <div className="h-56 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={sweep ?? []} margin={{ top: 8, right: 8, left: -12, bottom: 8 }}>
+              <LineChart data={sweep ?? []} margin={{ top: 8, right: 8, left: -12, bottom: 28 }}>
                 <CartesianGrid stroke={LINE} vertical={false} />
                 <XAxis dataKey="months" tick={CHART_TICK} />
                 <YAxis tick={CHART_TICK} tickFormatter={(v) => `${formatChartNum(Number(v), 0)}%`} />
                 <Tooltip cursor={{ fill: "rgba(28,28,28,0.04)" }} content={<ChartTip format={(n) => `${formatChartNum(n, 1)}%`} />} />
-                <Legend wrapperStyle={{ fontSize: 13, fontFamily: "IBM Plex Sans, sans-serif" }} />
+                <Legend iconSize={CHART_LEGEND.iconSize} wrapperStyle={CHART_LEGEND.wrapperStyle} />
                 <ReferenceLine
                   x={60}
                   stroke={GOLD}

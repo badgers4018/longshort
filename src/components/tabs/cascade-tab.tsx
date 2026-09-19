@@ -19,7 +19,7 @@ import { fromApp } from "@/lib/calc/fees";
 import { formatChartNum, formatPct } from "@/lib/utils";
 import { useParams } from "@/store/use-params";
 
-import { GOLD, LINE, CHART_TICK, NAVY, OX } from "@/lib/palette";
+import { GOLD, LINE, CHART_TICK, NAVY, OX, CHART_LEGEND } from "@/lib/palette";
 
 export function CascadeTab() {
   const p = useParams();
@@ -151,7 +151,7 @@ export function CascadeTab() {
                     <XAxis dataKey="round" tick={CHART_TICK} />
                     <YAxis yAxisId="l" tick={CHART_TICK} tickFormatter={(v) => formatChartNum(Number(v), 0)} />
                     <YAxis yAxisId="r" orientation="right" tick={CHART_TICK} tickFormatter={(v) => formatChartNum(Number(v), 1)} />
-                    <Legend wrapperStyle={{ fontSize: 13, fontFamily: "IBM Plex Sans, sans-serif" }} />
+                    <Legend iconSize={CHART_LEGEND.iconSize} wrapperStyle={CHART_LEGEND.wrapperStyle} />
                     <Tooltip content={<ChartTip format={(n) => formatChartNum(n, 1)} />} />
                     <Line yAxisId="l" type="monotone" dataKey="borrow" name="Borrow bps" stroke={GOLD} strokeWidth={2} dot={false} isAnimationActive={false} />
                     <Line yAxisId="r" type="monotone" dataKey="squeeze" name="Squeeze %" stroke={NAVY} strokeWidth={2} dot={false} isAnimationActive={false} />

@@ -129,6 +129,21 @@
   font-family: var(--font-ui);
 }
 
+.recharts-legend-wrapper,
+.recharts-default-legend,
+.recharts-legend-item {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.recharts-legend-item-text {
+  color: var(--color-muted) !important;
+  font-size: 11px !important;
+  font-family: var(--font-ui) !important;
+  font-weight: 500 !important;
+}
+
 input[type="range"].cm-range {
   appearance: none;
   cursor: pointer;

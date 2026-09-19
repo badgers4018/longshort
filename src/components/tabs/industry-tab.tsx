@@ -14,7 +14,7 @@ import { TabHeader, Stat } from "@/components/headline";
 import { ChartTip } from "@/components/charts/chart-tip";
 import { latestStats, type IndustryToggles } from "@/lib/calc/industry";
 import { INDUSTRY_VINTAGE } from "@/data/industry";
-import { CHART_TICK, GOLD, LINE, MUTED, NAVY, OX } from "@/lib/palette";
+import { CHART_TICK, GOLD, LINE, MUTED, NAVY, OX, CHART_LEGEND } from "@/lib/palette";
 import { formatChartNum, formatPct } from "@/lib/utils";
 import { useParams } from "@/store/use-params";
 
@@ -56,7 +56,7 @@ export function IndustryTab() {
           targetRef={rootRef}
         />
 
-        <div className="grid grid-cols-2 gap-x-6 gap-y-4 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2">
           <Stat label="Passive share" value={formatPct(s.passiveNow, 0)} tone="gold" hint="ICI index domestic equity funds + ETFs" />
           <Stat label="Residual float" value={formatPct(s.leftoverNow, 0)} hint="Wilshire-comparable listed US minus passive on" />
           <Stat
@@ -79,7 +79,7 @@ export function IndustryTab() {
           </h3>
           <div className="h-72 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={s.series} margin={{ top: 8, right: 8, left: -8, bottom: 8 }}>
+              <LineChart data={s.series} margin={{ top: 8, right: 8, left: -8, bottom: 36 }}>
                 <CartesianGrid stroke={LINE} vertical={false} />
                 <XAxis
                   dataKey="date"
@@ -103,7 +103,7 @@ export function IndustryTab() {
                   cursor={{ fill: "rgba(28,28,28,0.04)" }}
                   content={<ChartTip format={(n) => `${formatChartNum(n, 1)}%`} />}
                 />
-                <Legend />
+                <Legend iconSize={CHART_LEGEND.iconSize} wrapperStyle={CHART_LEGEND.wrapperStyle} />
                 <Line yAxisId="l" type="monotone" dataKey="leftover" name="Residual float" stroke={MUTED} strokeDasharray="6 4" strokeWidth={1.5} dot={false} isAnimationActive={false} connectNulls />
                 {p.showPassiveCore ? (
                   <Line yAxisId="l" type="monotone" dataKey="passive" name="Index funds + ETFs" stroke={GOLD} strokeWidth={2} dot={false} isAnimationActive={false} connectNulls />
@@ -135,7 +135,7 @@ export function IndustryTab() {
           </h3>
           <div className="h-48 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-56">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={s.series} margin={{ top: 8, right: 8, left: -8, bottom: 8 }}>
+              <LineChart data={s.series} margin={{ top: 8, right: 8, left: -8, bottom: 32 }}>
                 <CartesianGrid stroke={LINE} vertical={false} />
                 <XAxis
                   dataKey="date"
@@ -148,7 +148,7 @@ export function IndustryTab() {
                   cursor={{ fill: "rgba(28,28,28,0.04)" }}
                   content={<ChartTip format={(n) => `${formatChartNum(n, 2)}×`} />}
                 />
-                <Legend />
+                <Legend iconSize={CHART_LEGEND.iconSize} wrapperStyle={CHART_LEGEND.wrapperStyle} />
                 <Line type="monotone" dataKey="leverage" name="Long assets / equity" stroke={NAVY} strokeWidth={2} dot={false} isAnimationActive={false} />
                 {p.includeDerivsInLeverage ? (
                   <Line type="monotone" dataKey="leverageWithDeriv" name="Including deriv longs" stroke={OX} strokeWidth={2} dot={false} isAnimationActive={false} />

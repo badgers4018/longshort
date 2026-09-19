@@ -62,10 +62,10 @@ export function Stat({
           ? "text-win"
           : "text-navy";
   return (
-    <div className="min-w-0">
-      <div className="text-muted font-ui text-sm font-medium tracking-kicker uppercase">{label}</div>
+    <div className="min-w-0 overflow-visible">
+      <div className="text-muted font-ui text-xs font-medium tracking-kicker uppercase leading-snug">{label}</div>
       <div className={`tabular mt-1 font-display font-medium tracking-tight ${size === "sm" ? "text-xl" : "text-2xl"} ${color}`}>{value}</div>
-      {hint ? <div className="text-muted mt-1 text-sm leading-snug">{hint}</div> : null}
+      {hint ? <div className="text-muted mt-1 text-sm leading-snug break-words">{hint}</div> : null}
     </div>
   );
 }

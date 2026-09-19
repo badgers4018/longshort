@@ -13,10 +13,18 @@ export const CHART_TICK = {
   fontFamily: 'IBM Plex Sans, "Segoe UI", system-ui, sans-serif',
 } as const;
 
-export const CHART_LABEL = {
-  fill: MUTED,
-  fontSize: 12,
-  fontFamily: 'IBM Plex Sans, "Segoe UI", system-ui, sans-serif',
+export const CHART_LEGEND = {
+  iconSize: 8,
+  wrapperStyle: {
+    background: "transparent",
+    backgroundColor: "transparent",
+    border: "none",
+    boxShadow: "none",
+    fontSize: 11,
+    fontFamily: 'IBM Plex Sans, "Segoe UI", system-ui, sans-serif',
+    color: MUTED,
+    paddingTop: 4,
+  },
 } as const;
 
 /** @deprecated use OX */
