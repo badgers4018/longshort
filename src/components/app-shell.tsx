@@ -1,7 +1,9 @@
 import { RotateCcw } from "lucide-react";
 import { InlineRange } from "@/components/field";
 import { CascadeTab } from "@/components/tabs/cascade-tab";
+import { EstimatorTab } from "@/components/tabs/estimator-tab";
 import { FeeTab } from "@/components/tabs/fee-tab";
+import { ReflexivityTab } from "@/components/tabs/reflexivity-tab";
 import { SensitivityTab } from "@/components/tabs/sensitivity-tab";
 import { ShillerTab } from "@/components/tabs/shiller-tab";
 import { WealthTab } from "@/components/tabs/wealth-tab";
@@ -16,6 +18,8 @@ const TABS: { id: TabId; label: string }[] = [
   { id: "wealth", label: "Terminal wealth" },
   { id: "cascade", label: "Cascade" },
   { id: "history", label: "Shiller windows" },
+  { id: "estimator", label: "Estimator" },
+  { id: "reflexivity", label: "Reflexivity" },
 ];
 
 const tabBtn =
@@ -52,7 +56,7 @@ export function AppShell() {
         <div
           role="tablist"
           aria-label="Calculator tabs"
-          className="mb-6 grid grid-cols-2 border-2 border-navy sm:grid-cols-5"
+          className="mb-6 grid grid-cols-2 border-2 border-navy sm:grid-cols-4 lg:grid-cols-7"
         >
           {TABS.map((t) => (
             <button
@@ -137,6 +141,8 @@ export function AppShell() {
           {p.tab === "wealth" ? <WealthTab /> : null}
           {p.tab === "cascade" ? <CascadeTab /> : null}
           {p.tab === "history" ? <ShillerTab /> : null}
+          {p.tab === "estimator" ? <EstimatorTab /> : null}
+          {p.tab === "reflexivity" ? <ReflexivityTab /> : null}
         </div>
 
         <footer className="mt-16 border-t border-line pt-10 text-center">

@@ -8,7 +8,7 @@ export type AxisKey =
   | "borrowCost"
   | "holdingPeriod";
 
-export type TabId = "fees" | "grid" | "wealth" | "cascade" | "history";
+export type TabId = "fees" | "grid" | "wealth" | "cascade" | "history" | "estimator" | "reflexivity";
 
 export type SharedParams = {
   equityBeta: number;
@@ -59,12 +59,35 @@ export type GridParams = {
   gridY: AxisKey;
 };
 
+export type ReturnDist = "normal" | "skew-normal" | "student-t";
+
+export type EstimatorParams = {
+  trackRecord: number;
+  screenThreshold: number;
+  trueSharpeM: number;
+  trueSharpeS: number;
+  returnDist: ReturnDist;
+};
+
+export type ReflexivityParams = {
+  baselineAlpha: number;
+  capacityConstant: number;
+  flowSensitivity: number;
+  flowConvexity: number;
+  gammaAccrual: number;
+  dischargeSensitivity: number;
+  dischargeSeverity: number;
+  showCounterfactual: boolean;
+};
+
 export type AppParams = SharedParams &
   BookParams &
   ConvexityParams &
   CascadeParams &
   ShillerParams &
-  GridParams & {
+  GridParams &
+  EstimatorParams &
+  ReflexivityParams & {
     tab: TabId;
   };
 
