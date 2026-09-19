@@ -1,4 +1,6 @@
+import { useNavigate } from "@tanstack/react-router";
 import { RotateCcw } from "lucide-react";
+import { useEffect } from "react";
 import { InlineRange } from "@/components/field";
 import { CascadeTab } from "@/components/tabs/cascade-tab";
 import { EstimatorTab } from "@/components/tabs/estimator-tab";
@@ -25,8 +27,26 @@ const TABS: { id: TabId; label: string }[] = [
 const tabBtn =
   "min-h-12 px-2 py-3 text-center font-ui text-[15px] font-semibold leading-snug tracking-tight sm:text-sm transition-colors duration-[var(--motion-quick)] ease-[var(--ease-out)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/35 focus-visible:ring-offset-2";
 
-export function AppShell() {
+const TAB_IDS = new Set(TABS.map((t) => t.id));
+
+export function AppShell({ urlTab }: { urlTab?: TabId }) {
   const p = useParams();
+  const navigate = useNavigate();
+  const tab = urlTab && TAB_IDS.has(urlTab) ? urlTab : p.tab;
+
+  useEffect(() => {
+    if (tab !== p.tab) p.setTab(tab);
+    const label = TABS.find((t) => t.id === tab)?.label ?? "Calculator";
+    document.title = `${label} · The Multiplicative Indictment`;
+  }, [tab]);
+
+  function setTab(id: TabId) {
+    p.setTab(id);
+    void navigate({
+      to: "/",
+      search: id === "fees" ? {} : { tab: id },
+    });
+  }
 
   return (
     <main className="min-h-dvh bg-paper font-ui text-navy">
@@ -64,13 +84,13 @@ export function AppShell() {
               type="button"
               role="tab"
               id={`tab-${t.id}`}
-              aria-selected={p.tab === t.id}
+              aria-selected={tab === t.id}
               aria-controls={`panel-${t.id}`}
-              tabIndex={p.tab === t.id ? 0 : -1}
-              onClick={() => p.setTab(t.id)}
+              tabIndex={tab === t.id ? 0 : -1}
+              onClick={() => setTab(t.id)}
               className={cn(
                 tabBtn,
-                p.tab === t.id ? "bg-navy text-cream" : "bg-transparent text-navy hover:bg-cream",
+                tab === t.id ? "bg-navy text-cream" : "bg-transparent text-navy hover:bg-cream",
               )}
             >
               {t.label}
@@ -135,14 +155,14 @@ export function AppShell() {
           </details>
         </div>
 
-        <div role="tabpanel" id={`panel-${p.tab}`} aria-labelledby={`tab-${p.tab}`}>
-          {p.tab === "fees" ? <FeeTab /> : null}
-          {p.tab === "grid" ? <SensitivityTab /> : null}
-          {p.tab === "wealth" ? <WealthTab /> : null}
-          {p.tab === "cascade" ? <CascadeTab /> : null}
-          {p.tab === "history" ? <ShillerTab /> : null}
-          {p.tab === "estimator" ? <EstimatorTab /> : null}
-          {p.tab === "reflexivity" ? <ReflexivityTab /> : null}
+        <div role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
+          {tab === "fees" ? <FeeTab /> : null}
+          {tab === "grid" ? <SensitivityTab /> : null}
+          {tab === "wealth" ? <WealthTab /> : null}
+          {tab === "cascade" ? <CascadeTab /> : null}
+          {tab === "history" ? <ShillerTab /> : null}
+          {tab === "estimator" ? <EstimatorTab /> : null}
+          {tab === "reflexivity" ? <ReflexivityTab /> : null}
         </div>
 
         <footer className="mt-16 border-t border-line pt-10 text-center">

@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -54,11 +54,14 @@ export function EstimatorTab() {
     () => runEstimator(params, shared),
     [p.trackRecord, p.screenThreshold, p.trueSharpeM, p.trueSharpeS, p.returnDist, p.equityVol, p.riskFree],
   );
-  const sweep = useMemo(
-    () => sweepTrackRecord(params, shared),
-    [p.screenThreshold, p.trueSharpeM, p.trueSharpeS, p.equityVol, p.riskFree],
-  );
-  const point = nearest(sweep, p.trackRecord);
+  const [sweep, setSweep] = useState<SweepPoint[] | null>(null);
+  useEffect(() => {
+    const id = window.requestAnimationFrame(() => {
+      setSweep(sweepTrackRecord(params, shared));
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [p.screenThreshold, p.trueSharpeM, p.trueSharpeS, p.equityVol, p.riskFree]);
+  const point = sweep ? nearest(sweep, p.trackRecord) : undefined;
   const activeFpr =
     p.returnDist === "normal" ? point?.normalFPR : p.returnDist === "student-t" ? point?.studentFPR : point?.skewFPR;
 
@@ -93,7 +96,7 @@ export function EstimatorTab() {
           </h3>
           <div className="h-56 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={sweep} margin={{ top: 8, right: 8, left: -12, bottom: 8 }}>
+              <LineChart data={sweep ?? []} margin={{ top: 8, right: 8, left: -12, bottom: 8 }}>
                 <CartesianGrid stroke={LINE} vertical={false} />
                 <XAxis dataKey="months" tick={CHART_TICK} />
                 <YAxis tick={CHART_TICK} tickFormatter={(v) => `${formatChartNum(Number(v), 0)}%`} />
