@@ -29,7 +29,9 @@ export function FeeTab() {
     { name: "Beta", value: d.betaContribution, fill: NAVY },
     { name: "Mgmt", value: -d.mgmt, fill: OX },
     { name: "Incentive", value: -d.incentive, fill: OX },
-    { name: "Pass-thru", value: -d.passThrough, fill: OX },
+    ...(p.showPassThrough || d.passThrough > 0
+      ? [{ name: "Pass-thru", value: -d.passThrough, fill: OX }]
+      : []),
     { name: "Borrow", value: -d.borrowCost, fill: OX },
     { name: "Drag", value: -d.varDrag, fill: OX },
   ].reduce<{ name: string; base: number; rise: number; fill: string; label: number }[]>(
@@ -188,7 +190,20 @@ export function FeeTab() {
         <Field label="Management fee" value={p.mgmtFee} min={0} max={5} step={0.25} onChange={(v) => set("mgmtFee", v)} format={(v) => formatPct(v, 2)} />
         <Field label="Incentive fee" value={p.incentiveFee} min={0} max={50} step={5} onChange={(v) => set("incentiveFee", v)} format={(v) => formatPct(v, 0)} />
         <Toggle label="Pod-level netting" value={p.podNetting} onChange={(v) => set("podNetting", v)} />
-        <Field label="Pass-through costs" value={p.passThrough} min={0} max={5} step={0.25} onChange={(v) => set("passThrough", v)} format={(v) => formatPct(v, 2)} />
+        <Toggle
+          label="Pass-through costs"
+          value={p.showPassThrough}
+          yes="Show"
+          no="Skip"
+          onChange={(v) => {
+            set("showPassThrough", v);
+            if (v && p.passThrough === 0) set("passThrough", 1);
+            if (!v) set("passThrough", 0);
+          }}
+        />
+        {p.showPassThrough ? (
+          <Field label="Pass-through" value={p.passThrough} min={0} max={5} step={0.25} onChange={(v) => set("passThrough", v)} format={(v) => formatPct(v, 2)} />
+        ) : null}
         <Field label="Holding period" value={p.holdingPeriod} min={1} max={30} step={1} onChange={(v) => set("holdingPeriod", v)} format={(v) => `${v} yr`} />
         <p className="text-muted text-sm leading-relaxed">
           Weighted borrow {d.weightedBorrowBps.toFixed(0)} bps on {d.shortExposure.toFixed(2)}× short =

@@ -89,6 +89,7 @@ export type AppParams = SharedParams &
   EstimatorParams &
   ReflexivityParams & {
     tab: TabId;
+    showPassThrough: boolean;
   };
 
 export type FeeBreakdown = {
