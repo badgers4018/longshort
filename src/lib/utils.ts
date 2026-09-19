@@ -14,13 +14,23 @@ export function lerp(a: number, b: number, t: number) {
 }
 
 export function formatPct(n: number, digits = 1) {
-  const abs = Math.abs(n);
-  const d = abs >= 10 ? Math.max(0, digits - 1) : digits;
-  return `${n.toFixed(d)}%`;
+  if (!Number.isFinite(n)) return "—";
+  const d = Math.min(2, Math.max(0, digits));
+  const shown = Math.abs(n) >= 10 ? Math.max(0, d - 1) : d;
+  return `${n.toFixed(shown)}%`;
 }
 
 export function formatNum(n: number, digits = 2) {
-  return n.toFixed(digits);
+  if (!Number.isFinite(n)) return "—";
+  return n.toFixed(Math.min(3, Math.max(0, digits)));
+}
+
+export function formatChartNum(n: number, digits = 2) {
+  if (!Number.isFinite(n)) return "—";
+  const d = Math.min(3, Math.max(0, digits));
+  let s = n.toFixed(d);
+  if (s.includes(".")) s = s.replace(/0+$/, "").replace(/\.$/, "");
+  return s;
 }
 
 export function formatRatio(n: number) {

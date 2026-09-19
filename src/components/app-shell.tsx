@@ -19,7 +19,7 @@ const TABS: { id: TabId; label: string }[] = [
 ];
 
 const tabBtn =
-  "min-h-12 px-2 py-3 text-center font-ui text-sm font-semibold leading-tight tracking-tight transition-colors duration-[var(--motion-quick)] ease-[var(--ease-out)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/35 focus-visible:ring-offset-2";
+  "min-h-12 px-2 py-3 text-center font-ui text-[15px] font-semibold leading-snug tracking-tight sm:text-sm transition-colors duration-[var(--motion-quick)] ease-[var(--ease-out)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/35 focus-visible:ring-offset-2";
 
 export function AppShell() {
   const p = useParams();
@@ -43,7 +43,7 @@ export function AppShell() {
           <h1 className="mt-3 font-display text-display font-medium tracking-[-0.025em] text-navy leading-[1.15]">
             The Multiplicative Indictment
           </h1>
-          <p className="text-muted mx-auto mt-4 max-w-md text-sm leading-6">
+          <p className="text-muted mx-auto mt-4 max-w-md text-base leading-7">
             How much alpha does your hedge fund need to beat the index? You supply the assumptions. The
             arithmetic does not negotiate.
           </p>
@@ -75,7 +75,7 @@ export function AppShell() {
         </div>
 
         <div className="mb-8">
-          <p className="text-muted mb-1 font-ui text-xs font-medium tracking-kicker uppercase">
+          <p className="text-muted mb-1 font-ui text-sm font-medium tracking-kicker uppercase">
             Market — feeds every tab
           </p>
           <div className="grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-3">
@@ -114,7 +114,7 @@ export function AppShell() {
             </Button>
           </div>
           <details className="mt-4 rounded-lg bg-cream px-5">
-            <summary className="min-h-11 cursor-pointer py-3 font-ui text-xs font-semibold tracking-kicker text-navy uppercase">
+            <summary className="min-h-11 cursor-pointer py-3 font-ui text-sm font-semibold tracking-kicker text-navy uppercase">
               Defaults
             </summary>
             <p className="text-muted pb-2 text-sm leading-6">
@@ -152,7 +152,7 @@ export function AppShell() {
           <p className="text-muted mx-auto max-w-lg font-display text-base leading-7 italic">
             Nobody can attack assumptions that are yours.
           </p>
-          <p className="text-subtle mt-3 font-ui text-xs tracking-footer">
+          <p className="text-subtle mt-3 font-ui text-sm tracking-footer">
             Capital Misallocation · Monte Carlo seed 20260910 · Shiller real total returns, 1871–2023
           </p>
         </footer>

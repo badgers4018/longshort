@@ -75,6 +75,7 @@
   body {
     font-family: var(--font-ui);
     background: var(--color-paper);
+    font-size: 16px;
   }
 
   button:not(:disabled),

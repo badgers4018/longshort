@@ -15,10 +15,10 @@ import { Button } from "@/components/ui/button";
 import { ChartTip } from "@/components/charts/chart-tip";
 import { fromApp } from "@/lib/calc/fees";
 import { runMonteCarlo, type McResult } from "@/lib/calc/montecarlo";
-import { formatPct } from "@/lib/utils";
+import { formatChartNum, formatPct } from "@/lib/utils";
 import { useParams } from "@/store/use-params";
 
-import { GOLD, LINE, MUTED, NAVY, OX } from "@/lib/palette";
+import { GOLD, LINE, CHART_TICK, MUTED, NAVY, OX } from "@/lib/palette";
 
 function mergeHist(result: McResult) {
   const [b, ls, cx] = result.summaries;
@@ -88,10 +88,10 @@ export function WealthTab() {
               <Button onClick={run} disabled={running} variant="secondary">
                 {running ? "Running…" : "Re-run"}
               </Button>
-              <p className="text-muted text-xs">Seed {result.seed} · {result.paths.toLocaleString()} paths</p>
+              <p className="text-muted text-sm">Seed {result.seed} · {result.paths.toLocaleString()} paths</p>
             </div>
             <div>
-              <div className="mb-2 flex flex-wrap items-center gap-x-5 gap-y-1 font-ui text-xs font-medium tracking-kicker uppercase">
+              <div className="mb-2 flex flex-wrap items-center gap-x-5 gap-y-1 font-ui text-sm font-medium tracking-kicker uppercase">
                 <span className="flex items-center gap-1.5 text-navy">
                   <span className="inline-block h-px w-3.5 bg-navy" /> Unlevered beta
                 </span>
@@ -107,11 +107,17 @@ export function WealthTab() {
               </div>
               <div className="h-56 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={hist} margin={{ top: 8, right: 8, left: -16, bottom: 8 }} barGap={-6} barCategoryGap={1}>
+                  <BarChart data={hist} margin={{ top: 8, right: 8, left: -8, bottom: 8 }} barGap={-6} barCategoryGap={1}>
                     <CartesianGrid stroke={LINE} vertical={false} />
-                    <XAxis dataKey="x" type="number" domain={["dataMin", "dataMax"]} tick={{ fill: MUTED, fontSize: 11 }} tickFormatter={(v) => Number(v).toFixed(1)} />
+                    <XAxis
+                      dataKey="x"
+                      type="number"
+                      domain={["dataMin", "dataMax"]}
+                      tick={CHART_TICK}
+                      tickFormatter={(v) => formatChartNum(Number(v), 2)}
+                    />
                     <YAxis hide domain={[0, "auto"]} />
-                    <Tooltip content={<ChartTip />} />
+                    <Tooltip content={<ChartTip format={(n) => formatChartNum(n, 2)} />} />
                     {ls && ls.p5 > 0 ? (
                       <ReferenceLine x={Math.log(ls.p5)} stroke={OX} strokeDasharray="2 3" strokeOpacity={0.35} />
                     ) : null}
@@ -127,7 +133,7 @@ export function WealthTab() {
                         strokeWidth={1.5}
                         label={
                           s.id === "beta"
-                            ? { value: "Index", position: "insideTopRight", fill: MUTED, fontSize: 10 }
+                            ? { value: "Index", position: "insideTopRight", fill: MUTED, fontSize: 12 }
                             : undefined
                         }
                       />
@@ -141,9 +147,9 @@ export function WealthTab() {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[520px] text-left text-sm">
+              <table className="w-full min-w-[520px] text-left text-base sm:text-sm">
                 <thead>
-                  <tr className="text-muted font-ui text-xs tracking-kicker uppercase">
+                  <tr className="text-muted font-ui text-sm tracking-kicker uppercase">
                     <th className="pb-2 font-semibold">Strategy</th>
                     <th className="pb-2 font-semibold">Median</th>
                     <th className="pb-2 font-semibold">5th</th>
@@ -204,12 +210,12 @@ export function WealthTab() {
 
       <aside className="space-y-4 rounded-lg bg-cream p-5">
         <h3 className="font-display text-title font-medium text-navy">Convexity & skew</h3>
-        <Field label="Skew (long-short)" value={p.skew} min={-1.5} max={0} step={0.1} onChange={(v) => p.setParam("skew", v)} />
+        <Field label="Skew (long-short)" value={p.skew} min={-1.5} max={0} step={0.1} onChange={(v) => p.setParam("skew", v)} format={(v) => v.toFixed(2)} />
         <Field label="Convexity premium" value={p.convexityPremium} min={0} max={4} step={0.1} onChange={(v) => p.setParam("convexityPremium", v)} format={(v) => formatPct(v)} />
-        <Field label="Payoff multiple" value={p.payoffMultiple} min={1} max={20} step={0.5} onChange={(v) => p.setParam("payoffMultiple", v)} />
+        <Field label="Payoff multiple" value={p.payoffMultiple} min={1} max={20} step={0.5} onChange={(v) => p.setParam("payoffMultiple", v)} format={(v) => v.toFixed(1)} />
         <Field label="Trigger threshold" value={p.triggerSigma} min={1} max={4} step={0.1} onChange={(v) => p.setParam("triggerSigma", v)} format={(v) => `${v.toFixed(1)}σ`} />
         <Field label="Event frequency" value={p.eventFrequency} min={0} max={0.4} step={0.01} onChange={(v) => p.setParam("eventFrequency", v)} format={(v) => `${(v * 100).toFixed(0)}%/yr`} />
-        <p className="text-muted text-xs leading-relaxed">
+        <p className="text-muted text-sm leading-relaxed">
           Long-short uses Tab 1's net arithmetic return and book vol, with the skew slider replacing
           the lognormal. Beta and convexity share the same Gaussian draws. Holding period is Tab 1.
         </p>

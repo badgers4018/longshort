@@ -19,10 +19,10 @@ import {
   runShillerWindows,
   winRateAt,
 } from "@/lib/calc/shiller";
-import { cn, formatPct } from "@/lib/utils";
+import { cn, formatChartNum, formatPct } from "@/lib/utils";
 import { useParams } from "@/store/use-params";
 
-import { LINE, MUTED, NAVY } from "@/lib/palette";
+import { CHART_TICK, LINE, MUTED, NAVY } from "@/lib/palette";
 
 export function ShillerTab() {
   const p = useParams();
@@ -105,7 +105,7 @@ export function ShillerTab() {
         </div>
 
         <div>
-          <h3 className="text-muted mb-3 font-ui text-xs font-medium tracking-kicker uppercase">
+          <h3 className="text-muted mb-3 font-ui text-sm font-medium tracking-kicker uppercase">
             Share of windows the hedged book won, by decade
           </h3>
           <div className="grid grid-cols-5 gap-1 sm:grid-cols-8">
@@ -113,19 +113,19 @@ export function ShillerTab() {
               <div
                 key={row.decade}
                 className={cn(
-                  "flex h-11 flex-col items-center justify-center rounded-xs",
+                  "flex h-12 flex-col items-center justify-center rounded-xs",
                   row.win >= 50 ? "bg-win text-cream" : row.win > 0 ? "bg-gold text-navy" : "bg-ox text-cream",
                 )}
               >
-                <span className="font-ui text-[10px] font-medium tracking-kicker uppercase opacity-80">
+                <span className="font-ui text-xs font-medium tracking-kicker uppercase opacity-80">
                   {row.decade}
                 </span>
-                <span className="tabular text-xs font-semibold">{row.win.toFixed(0)}%</span>
+                <span className="tabular text-sm font-semibold">{row.win.toFixed(0)}%</span>
               </div>
             ))}
           </div>
           {result.winRate === 0 ? (
-            <p className="text-muted mt-2 text-xs leading-5">
+            <p className="text-muted mt-2 text-sm leading-6">
               0 of {decade.length} decades. The cells aren't missing data — at {formatPct(p.allInFee, 0)} fees
               and {formatPct(p.shillerAlpha, 0)} alpha the hedge never cleared the index.
             </p>
@@ -133,18 +133,18 @@ export function ShillerTab() {
         </div>
 
         <div>
-          <h3 className="text-muted mb-3 font-ui text-xs font-medium tracking-kicker uppercase">
+          <h3 className="text-muted mb-3 font-ui text-sm font-medium tracking-kicker uppercase">
             Win rate across fee × alpha — {result.n} windows
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[420px] border-collapse text-center">
               <thead>
                 <tr>
-                  <th className="text-muted w-24 pr-2 text-left font-ui text-xs font-medium tracking-wide">
+                  <th className="text-muted w-24 pr-2 text-left font-ui text-sm font-medium tracking-wide">
                     Fee \ Alpha
                   </th>
                   {GRID_ALPHAS.map((a) => (
-                    <th key={a} className="tabular text-muted px-0.5 pb-2 font-ui text-xs font-medium">
+                    <th key={a} className="tabular text-muted px-0.5 pb-2 font-ui text-sm font-medium">
                       {a}%
                     </th>
                   ))}
@@ -153,7 +153,7 @@ export function ShillerTab() {
               <tbody>
                 {grid.map((row, fi) => (
                   <tr key={GRID_FEES[fi]}>
-                    <th className="tabular pr-2 text-left font-ui text-xs font-semibold text-navy">
+                    <th className="tabular pr-2 text-left font-ui text-sm font-semibold text-navy">
                       {GRID_FEES[fi]}%
                     </th>
                     {row.map((cell, ai) => {
@@ -162,13 +162,13 @@ export function ShillerTab() {
                         <td key={`${cell.fee}-${cell.alpha}`} className="p-0.5">
                           <div
                             className={cn(
-                              "flex h-11 items-center justify-center rounded-xs text-[12px] font-semibold tabular",
+                              "flex h-11 items-center justify-center rounded-xs text-sm font-semibold tabular",
                               cell.win >= 0.5 && "bg-win text-cream",
                               cell.win > 0 && cell.win < 0.5 && "bg-gold text-navy",
                               cell.win === 0 && "bg-ox text-cream",
                               on && "ring-2 ring-navy ring-offset-1 ring-offset-paper",
                             )}
-                            title={`${cell.win * 100}% of windows at ${cell.fee}% fees, ${cell.alpha}% alpha`}
+                            title={`${(cell.win * 100).toFixed(0)}% of windows at ${cell.fee}% fees, ${cell.alpha}% alpha`}
                           >
                             {(cell.win * 100).toFixed(0)}%
                           </div>
@@ -180,36 +180,36 @@ export function ShillerTab() {
               </tbody>
             </table>
           </div>
-          <p className="text-muted mt-2 text-xs">
+          <p className="text-muted mt-2 text-sm">
             Navy ring is your current fee and alpha. Green: hedge wins ≥ half of history. Gold: some decades.
             Oxblood: none.
           </p>
         </div>
 
         <div>
-          <h3 className="text-muted mb-3 font-ui text-xs font-medium tracking-kicker uppercase">
+          <h3 className="text-muted mb-3 font-ui text-sm font-medium tracking-kicker uppercase">
             Terminal wealth ratio (hedged / unlevered) across windows
           </h3>
           <div className="h-44 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={hist} margin={{ top: 16, right: 8, left: -12, bottom: 8 }}>
+              <BarChart data={hist} margin={{ top: 16, right: 8, left: -8, bottom: 8 }}>
                 <CartesianGrid stroke={LINE} vertical={false} />
                 <XAxis
                   dataKey="x"
                   type="number"
                   domain={histDomain}
-                  tickFormatter={(v) => Number(v).toFixed(1)}
-                  tick={{ fill: MUTED, fontSize: 11 }}
+                  tickFormatter={(v) => formatChartNum(Number(v), 2)}
+                  tick={CHART_TICK}
                 />
-                <YAxis tick={{ fill: MUTED, fontSize: 11 }} />
+                <YAxis tick={CHART_TICK} tickFormatter={(v) => formatChartNum(Number(v), 0)} />
                 <ReferenceLine
                   x={1}
                   stroke={NAVY}
                   strokeDasharray="4 4"
                   strokeWidth={1.5}
-                  label={{ value: "1.0×", position: "top", fill: MUTED, fontSize: 10 }}
+                  label={{ value: "1.00×", position: "top", fill: MUTED, fontSize: 12 }}
                 />
-                <Tooltip content={<ChartTip />} />
+                <Tooltip content={<ChartTip format={(n) => formatChartNum(n, 2)} />} />
                 <Bar dataKey="n" name="Windows" fill={NAVY} radius={[3, 3, 0, 0]} isAnimationActive={false} />
               </BarChart>
             </ResponsiveContainer>
@@ -232,7 +232,7 @@ export function ShillerTab() {
         <Field label="All-in fee load" value={p.allInFee} min={1} max={10} step={0.5} onChange={(v) => p.setParam("allInFee", v)} format={(v) => formatPct(v)} />
         <Field label="Hedged vol reduction" value={p.hedgedVolReduction} min={20} max={80} step={10} onChange={(v) => p.setParam("hedgedVolReduction", v)} format={(v) => formatPct(v, 0)} />
         <Field label="Alpha assumption" value={p.shillerAlpha} min={0} max={10} step={0.5} onChange={(v) => p.setParam("shillerAlpha", v)} format={(v) => formatPct(v)} />
-        <p className="text-muted text-xs leading-relaxed">
+        <p className="text-muted text-sm leading-relaxed">
           Real total returns from Shiller's S&P Composite, 1871–{result.end.slice(0, 4)}. Monthly
           observations, {result.windowYears}-year rolling windows, stepped quarterly. Net exposure is taken
           from Tab 1. Geometric hedge return = (net × window arithmetic) + alpha − fees − ½σ²_hedged.

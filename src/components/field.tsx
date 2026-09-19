@@ -19,7 +19,7 @@ type RangeProps = {
 export function InlineRange({ label, value, min, max, step, onChange, format }: RangeProps) {
   const display = format ? format(value) : String(value);
   return (
-    <label className="text-muted flex min-w-[140px] flex-1 items-center gap-3 font-ui text-xs">
+    <label className="text-muted flex min-w-[140px] flex-1 items-center gap-3 font-ui text-sm">
       <span className="shrink-0 font-medium">{label}</span>
       <input
         type="range"
@@ -42,8 +42,8 @@ export function Field({ label, value, min, max, step, onChange, format, hint }: 
   return (
     <label className="block">
       <div className="mb-0.5 flex items-baseline justify-between gap-3">
-        <span className="text-muted font-ui text-xs font-medium">{label}</span>
-        <span className="min-w-[4.75rem] text-right font-ui text-xs tabular-nums text-navy">{display}</span>
+        <span className="text-muted font-ui text-sm font-medium">{label}</span>
+        <span className="min-w-[4.75rem] text-right font-ui text-sm tabular-nums text-navy">{display}</span>
       </div>
       <input
         type="range"
@@ -55,7 +55,7 @@ export function Field({ label, value, min, max, step, onChange, format, hint }: 
         aria-label={label}
         onChange={(e) => onChange(snap(Number(e.target.value), step))}
       />
-      {hint ? <div className="text-subtle -mt-2 font-ui text-[10px] tracking-wide">{hint}</div> : null}
+      {hint ? <div className="text-subtle -mt-2 font-ui text-xs tracking-wide">{hint}</div> : null}
     </label>
   );
 }
@@ -75,13 +75,13 @@ export function Toggle({
 }) {
   return (
     <div>
-      <div className="text-muted mb-2 font-ui text-xs font-medium">{label}</div>
+      <div className="text-muted mb-2 font-ui text-sm font-medium">{label}</div>
       <div className="inline-flex h-11 items-center rounded-md bg-cream p-0.5">
         <button
           type="button"
           onClick={() => onChange(true)}
           className={cn(
-            "h-10 min-w-11 rounded-sm px-3 font-ui text-xs font-semibold transition-[background-color,color] duration-[var(--motion-quick)] ease-[var(--ease-out)]",
+            "h-10 min-w-11 rounded-sm px-3 font-ui text-sm font-semibold transition-[background-color,color] duration-[var(--motion-quick)] ease-[var(--ease-out)]",
             value ? "bg-navy text-cream" : "text-muted hover:text-navy",
           )}
         >
@@ -91,7 +91,7 @@ export function Toggle({
           type="button"
           onClick={() => onChange(false)}
           className={cn(
-            "h-10 min-w-11 rounded-sm px-3 font-ui text-xs font-semibold transition-[background-color,color] duration-[var(--motion-quick)] ease-[var(--ease-out)]",
+            "h-10 min-w-11 rounded-sm px-3 font-ui text-sm font-semibold transition-[background-color,color] duration-[var(--motion-quick)] ease-[var(--ease-out)]",
             !value ? "bg-navy text-cream" : "text-muted hover:text-navy",
           )}
         >
@@ -115,7 +115,7 @@ export function SelectField<T extends string>({
 }) {
   return (
     <label className="block">
-      <span className="text-muted mb-1.5 block font-ui text-xs font-medium">{label}</span>
+      <span className="text-muted mb-1.5 block font-ui text-sm font-medium">{label}</span>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as T)}

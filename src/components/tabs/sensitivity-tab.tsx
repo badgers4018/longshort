@@ -71,11 +71,11 @@ export function SensitivityTab() {
           <table className="w-full min-w-[640px] border-collapse text-center">
             <thead>
               <tr>
-                <th className="text-muted w-28 pr-2 text-left font-ui text-xs font-medium tracking-wide">
+                <th className="text-muted w-28 pr-2 text-left font-ui text-sm font-medium tracking-wide">
                   {AXIS_LABEL[p.gridY]} \ {AXIS_LABEL[p.gridX]}
                 </th>
                 {xs.map((x) => (
-                  <th key={x} className="tabular text-muted px-0.5 pb-2 font-ui text-xs font-medium">
+                  <th key={x} className="tabular text-muted px-0.5 pb-2 font-ui text-sm font-medium">
                     {x}
                     {AXIS_UNIT[p.gridX] === "%" ? "%" : AXIS_UNIT[p.gridX] === "×" ? "×" : ""}
                   </th>
@@ -85,7 +85,7 @@ export function SensitivityTab() {
             <tbody>
               {ys.map((y, yi) => (
                 <tr key={y}>
-                  <th className="tabular pr-2 text-left font-ui text-xs font-semibold text-navy">
+                  <th className="tabular pr-2 text-left font-ui text-sm font-semibold text-navy">
                     {y}
                     {AXIS_UNIT[p.gridY] === "%" ? "%" : AXIS_UNIT[p.gridY] === "yr" ? "y" : ""}
                   </th>
@@ -95,7 +95,7 @@ export function SensitivityTab() {
                       <td key={`${xi}-${yi}`} className="p-0.5">
                         <div
                           className={cn(
-                            "flex h-11 items-center justify-center rounded-xs text-[12px] font-semibold tabular",
+                            "flex h-11 items-center justify-center rounded-xs text-sm font-semibold tabular",
                             cell.tone === "win" && "bg-win text-cream",
                             cell.tone === "lose" && "bg-ox text-cream",
                             cell.tone === "near" && "bg-gold text-navy",
@@ -114,7 +114,7 @@ export function SensitivityTab() {
           </table>
         </div>
 
-        <div className="text-muted mt-4 flex flex-wrap gap-4 text-xs">
+        <div className="text-muted mt-4 flex flex-wrap gap-4 text-sm">
           <span className="inline-flex items-center gap-1.5">
             <i className="size-2.5 rounded-xs bg-win" /> Hedge fund wins
           </span>

@@ -16,10 +16,10 @@ import { Button } from "@/components/ui/button";
 import { ChartTip } from "@/components/charts/chart-tip";
 import { cascadeCurve, runCascade, type CascadeResult } from "@/lib/calc/cascade";
 import { fromApp } from "@/lib/calc/fees";
-import { formatPct } from "@/lib/utils";
+import { formatChartNum, formatPct } from "@/lib/utils";
 import { useParams } from "@/store/use-params";
 
-import { GOLD, LINE, MUTED, NAVY, OX } from "@/lib/palette";
+import { GOLD, LINE, CHART_TICK, NAVY, OX } from "@/lib/palette";
 
 export function CascadeTab() {
   const p = useParams();
@@ -112,7 +112,7 @@ export function CascadeTab() {
               <Button variant="ghost" onClick={run}>
                 Re-run
               </Button>
-              <span className="text-muted text-xs">
+              <span className="text-muted text-sm">
                 Round {Math.min(step, result.rounds.length)} / {result.rounds.length}
               </span>
             </div>
@@ -128,14 +128,14 @@ export function CascadeTab() {
             </div>
 
             <div>
-              <h3 className="text-muted mb-3 font-ui text-xs font-medium tracking-kicker uppercase">Cascade curve</h3>
+              <h3 className="text-muted mb-3 font-ui text-sm font-medium tracking-kicker uppercase">Cascade curve</h3>
               <div className="h-56 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={visible} margin={{ top: 8, right: 12, left: -8, bottom: 8 }}>
                     <CartesianGrid stroke={LINE} />
-                    <XAxis dataKey="squeeze" tickFormatter={(v) => `${Number(v).toFixed(1)}%`} tick={{ fill: MUTED, fontSize: 11 }} />
-                    <YAxis tick={{ fill: MUTED, fontSize: 11 }} />
-                    <Tooltip content={<ChartTip format={(n) => String(Number(n).toFixed(1))} />} />
+                    <XAxis dataKey="squeeze" tickFormatter={(v) => `${Number(v).toFixed(1)}%`} tick={CHART_TICK} />
+                    <YAxis tick={CHART_TICK} tickFormatter={(v) => formatChartNum(Number(v), 0)} />
+                    <Tooltip content={<ChartTip format={(n) => formatChartNum(n, 1)} />} />
                     <Line type="monotone" dataKey="covered" name="Pods liquidated" stroke={OX} strokeWidth={2.5} dot={{ r: 3, fill: GOLD }} isAnimationActive={false} />
                   </LineChart>
                 </ResponsiveContainer>
@@ -143,16 +143,16 @@ export function CascadeTab() {
             </div>
 
             <div>
-              <h3 className="text-muted mb-3 font-ui text-xs font-medium tracking-kicker uppercase">Borrow trajectory</h3>
+              <h3 className="text-muted mb-3 font-ui text-sm font-medium tracking-kicker uppercase">Borrow trajectory</h3>
               <div className="h-44 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)]">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={borrowSeries} margin={{ top: 8, right: 12, left: -8, bottom: 8 }}>
                     <CartesianGrid stroke={LINE} />
-                    <XAxis dataKey="round" tick={{ fill: MUTED, fontSize: 11 }} />
-                    <YAxis yAxisId="l" tick={{ fill: MUTED, fontSize: 11 }} />
-                    <YAxis yAxisId="r" orientation="right" tick={{ fill: MUTED, fontSize: 11 }} />
-                    <Legend />
-                    <Tooltip content={<ChartTip />} />
+                    <XAxis dataKey="round" tick={CHART_TICK} />
+                    <YAxis yAxisId="l" tick={CHART_TICK} tickFormatter={(v) => formatChartNum(Number(v), 0)} />
+                    <YAxis yAxisId="r" orientation="right" tick={CHART_TICK} tickFormatter={(v) => formatChartNum(Number(v), 1)} />
+                    <Legend wrapperStyle={{ fontSize: 13, fontFamily: "IBM Plex Sans, sans-serif" }} />
+                    <Tooltip content={<ChartTip format={(n) => formatChartNum(n, 1)} />} />
                     <Line yAxisId="l" type="monotone" dataKey="borrow" name="Borrow bps" stroke={GOLD} strokeWidth={2} dot={false} isAnimationActive={false} />
                     <Line yAxisId="r" type="monotone" dataKey="squeeze" name="Squeeze %" stroke={NAVY} strokeWidth={2} dot={false} isAnimationActive={false} />
                   </LineChart>
@@ -167,7 +167,7 @@ export function CascadeTab() {
         <h3 className="font-display text-title font-medium text-navy">The squeeze</h3>
         <Field label="Number of pods" value={p.podCount} min={10} max={200} step={10} onChange={(v) => p.setParam("podCount", v)} />
         <Field label="Stop-out threshold" value={p.stopOut} min={-10} max={-2} step={0.5} onChange={(v) => p.setParam("stopOut", v)} format={(v) => formatPct(v)} />
-        <Field label="Short-book correlation" value={p.shortCorr} min={0.1} max={0.95} step={0.05} onChange={(v) => p.setParam("shortCorr", v)} />
+        <Field label="Short-book correlation" value={p.shortCorr} min={0.1} max={0.95} step={0.05} onChange={(v) => p.setParam("shortCorr", v)} format={(v) => v.toFixed(2)} />
         <Field label="Initial squeeze" value={p.initialSqueeze} min={1} max={10} step={0.5} onChange={(v) => p.setParam("initialSqueeze", v)} format={(v) => formatPct(v)} />
         <Toggle
           label="Borrow spike function"
@@ -176,7 +176,7 @@ export function CascadeTab() {
           no="Linear"
           onChange={(v) => p.setBorrowSpike(v ? "convex" : "linear")}
         />
-        <p className="text-muted text-xs leading-relaxed">
+        <p className="text-muted text-sm leading-relaxed">
           Price impact is square-root in newly covered notional. Tighter stops and more pods both raise
           amplification — the industry's own growth is the cascade.
         </p>

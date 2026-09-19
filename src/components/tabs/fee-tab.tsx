@@ -17,7 +17,7 @@ import { fromApp, fullBreakdown } from "@/lib/calc/fees";
 import { formatPct } from "@/lib/utils";
 import { useParams } from "@/store/use-params";
 
-import { GOLD, LINE, MUTED, NAVY, OX } from "@/lib/palette";
+import { GOLD, LINE, CHART_TICK, MUTED, NAVY, OX } from "@/lib/palette";
 
 export function FeeTab() {
   const p = useParams();
@@ -76,19 +76,19 @@ export function FeeTab() {
         </div>
 
         <div>
-          <h3 className="mb-3 font-ui text-xs font-medium tracking-kicker text-muted uppercase">From gross alpha to net geometric</h3>
+          <h3 className="mb-3 font-ui text-sm font-medium tracking-kicker text-muted uppercase">From gross alpha to net geometric</h3>
           <div className="h-56 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={waterfall} margin={{ top: 8, right: 8, left: -12, bottom: 8 }}>
                 <CartesianGrid stroke={LINE} vertical={false} />
-                <XAxis dataKey="name" tick={{ fill: MUTED, fontSize: 10 }} interval={0} height={48} />
-                <YAxis tick={{ fill: MUTED, fontSize: 11 }} tickFormatter={(v) => `${v}%`} />
+                <XAxis dataKey="name" tick={CHART_TICK} interval={0} height={52} />
+                <YAxis tick={CHART_TICK} tickFormatter={(v) => `${Number(v).toFixed(1)}%`} />
                 <ReferenceLine
                   y={d.betaGeo}
                   stroke={NAVY}
                   strokeDasharray="4 4"
                   strokeWidth={1.5}
-                  label={{ value: "Index", fill: MUTED, fontSize: 10, position: "insideTopRight" }}
+                  label={{ value: "Index", fill: MUTED, fontSize: 12, position: "insideTopRight" }}
                 />
                 <Tooltip
                   cursor={{ fill: "rgba(28,28,28,0.04)" }}
@@ -103,19 +103,19 @@ export function FeeTab() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <p className="text-muted mt-2 text-xs">
+          <p className="text-muted mt-2 text-sm">
             Dashed line is unlevered-beta geometric — the index match. Last bar lands at net geometric.
           </p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           <div>
-            <h3 className="mb-3 font-ui text-xs font-medium tracking-kicker text-muted uppercase">Net geometric vs. unlevered beta</h3>
+            <h3 className="mb-3 font-ui text-sm font-medium tracking-kicker text-muted uppercase">Net geometric vs. unlevered beta</h3>
             <div className="h-40 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={compare} layout="vertical" margin={{ top: 8, right: 16, left: 8, bottom: 8 }}>
-                  <XAxis type="number" tickFormatter={(v) => `${v}%`} tick={{ fill: MUTED, fontSize: 11 }} />
-                  <YAxis type="category" dataKey="name" width={110} tick={{ fill: NAVY, fontSize: 12 }} />
+                  <XAxis type="number" tickFormatter={(v) => `${Number(v).toFixed(1)}%`} tick={CHART_TICK} />
+                  <YAxis type="category" dataKey="name" width={118} tick={{ ...CHART_TICK, fill: NAVY }} />
                   <ReferenceLine x={0} stroke={NAVY} />
                   <Tooltip content={<ChartTip format={(n) => formatPct(n)} />} />
                   <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={22} isAnimationActive={false}>
@@ -129,7 +129,7 @@ export function FeeTab() {
           </div>
 
           <div>
-            <h3 className="mb-3 font-ui text-xs font-medium tracking-kicker text-muted uppercase">Fee integral — transfer vs. deadweight</h3>
+            <h3 className="mb-3 font-ui text-sm font-medium tracking-kicker text-muted uppercase">Fee integral — transfer vs. deadweight</h3>
             <div className="space-y-3">
               <div className="flex h-10 overflow-hidden rounded-sm bg-line">
                 <div
@@ -145,22 +145,22 @@ export function FeeTab() {
               </div>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <div className="text-muted font-ui text-xs font-medium tracking-kicker uppercase">
+                  <div className="text-muted font-ui text-sm font-medium tracking-kicker uppercase">
                     Total fees extracted
                   </div>
                   <div className="tabular font-display text-xl font-medium text-navy">
                     {formatPct(d.transfer, 1)}
                   </div>
-                  <p className="text-muted mt-1 text-xs">Transfer — cumulative fees as % of initial capital.</p>
+                  <p className="text-muted mt-1 text-sm">Transfer — cumulative fees as % of initial capital.</p>
                 </div>
                 <div>
-                  <div className="text-muted font-ui text-xs font-medium tracking-kicker uppercase">
+                  <div className="text-muted font-ui text-sm font-medium tracking-kicker uppercase">
                     Foregone compounding
                   </div>
                   <div className="tabular font-display text-xl font-medium text-ox">
                     {formatPct(d.deadweight, 1)}
                   </div>
-                  <p className="text-muted mt-1 text-xs">
+                  <p className="text-muted mt-1 text-sm">
                     Deadweight — fees compounded at the equity rate, less excess delivered.
                   </p>
                 </div>
@@ -169,7 +169,7 @@ export function FeeTab() {
           </div>
         </div>
 
-        <p className="text-muted text-xs leading-relaxed">
+        <p className="text-muted text-sm leading-relaxed">
           The ½σ² drag formula is a second-order approximation, exact under lognormality. Under negative
           skew (which this essay argues is endemic to long-short), the true drag is larger. This makes the
           break-even alpha estimate conservative. See Tab 3's skew slider for the higher-order correction.
@@ -190,7 +190,7 @@ export function FeeTab() {
         <Toggle label="Pod-level netting" value={p.podNetting} onChange={(v) => set("podNetting", v)} />
         <Field label="Pass-through costs" value={p.passThrough} min={0} max={5} step={0.25} onChange={(v) => set("passThrough", v)} format={(v) => formatPct(v, 2)} />
         <Field label="Holding period" value={p.holdingPeriod} min={1} max={30} step={1} onChange={(v) => set("holdingPeriod", v)} format={(v) => `${v} yr`} />
-        <p className="text-muted text-xs leading-relaxed">
+        <p className="text-muted text-sm leading-relaxed">
           Weighted borrow {d.weightedBorrowBps.toFixed(0)} bps on {d.shortExposure.toFixed(2)}× short =
           {" "}{formatPct(d.borrowCost, 2)} of NAV. Gross return {formatPct(d.grossReturn)} = net × beta +
           alpha.
