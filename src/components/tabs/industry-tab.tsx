@@ -22,6 +22,8 @@ function trillions(b: number) {
   return `$${(b / 1000).toFixed(1)}T`;
 }
 
+const YEAR_TICKS = ["2012Q4", "2015Q4", "2018Q4", "2021Q4", "2025Q4"];
+
 export function IndustryTab() {
   const p = useParams();
   const rootRef = useRef<HTMLElement>(null);
@@ -83,9 +85,10 @@ export function IndustryTab() {
                 <CartesianGrid stroke={LINE} vertical={false} />
                 <XAxis
                   dataKey="date"
+                  ticks={YEAR_TICKS}
+                  interval={0}
                   tick={CHART_TICK}
-                  interval={3}
-                  tickFormatter={(v) => (String(v).endsWith("Q4") ? String(v).slice(0, 4) : "")}
+                  tickFormatter={(v) => String(v).slice(0, 4)}
                 />
                 <YAxis
                   yAxisId="l"
@@ -141,9 +144,10 @@ export function IndustryTab() {
                 <CartesianGrid stroke={LINE} vertical={false} />
                 <XAxis
                   dataKey="date"
+                  ticks={YEAR_TICKS}
+                  interval={0}
                   tick={CHART_TICK}
-                  interval={3}
-                  tickFormatter={(v) => (String(v).endsWith("Q4") ? String(v).slice(0, 4) : "")}
+                  tickFormatter={(v) => String(v).slice(0, 4)}
                 />
                 <YAxis tick={CHART_TICK} tickFormatter={(v) => `${formatChartNum(Number(v), 1)}×`} />
                 <Tooltip
