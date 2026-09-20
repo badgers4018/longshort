@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { INDUSTRY } from "../../data/industry.ts";
-import { crowdingOccupancy, latestStats, mapIndustry } from "./industry.ts";
+import { crowdingAxis, crowdingOccupancy, latestStats, mapIndustry } from "./industry.ts";
 
 const defaults = {
   showPassiveCore: true,
@@ -48,4 +48,13 @@ test("map drops hidden series", () => {
   const hidden = mapIndustry({ ...defaults, showHfLongs: false, showPassiveCore: false });
   assert.equal(hidden[0].hfLongPct, null);
   assert.equal(hidden[0].passive, null);
+});
+
+test("crowding axis starts 30% below the low", () => {
+  const series = mapIndustry(defaults);
+  const vals = series.map((p) => p.crowding).filter((n): n is number => n != null);
+  const lo = Math.min(...vals);
+  const [start, end] = crowdingAxis(series);
+  assert.ok(Math.abs(start - lo * 0.7) < 1e-9);
+  assert.ok(end > Math.max(...vals));
 });

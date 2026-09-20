@@ -133,7 +133,7 @@ export function WealthTab() {
                         strokeWidth={1.5}
                         label={
                           s.id === "beta"
-                            ? { value: "Index", position: "insideTopRight", fill: MUTED, fontSize: 12 }
+                            ? { value: "Index", position: "insideTopRight", fill: MUTED, fontSize: 10 }
                             : undefined
                         }
                       />

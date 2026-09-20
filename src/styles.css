@@ -125,7 +125,7 @@
 
 .recharts-cartesian-axis-tick-value {
   fill: var(--color-muted);
-  font-size: 11px;
+  font-size: 10px;
   font-family: var(--font-ui);
 }
 
@@ -139,7 +139,7 @@
 
 .recharts-legend-item-text {
   color: var(--color-muted) !important;
-  font-size: 11px !important;
+  font-size: 10px !important;
   font-family: var(--font-ui) !important;
   font-weight: 500 !important;
 }

@@ -107,14 +107,14 @@ export function EstimatorTab() {
                   stroke={GOLD}
                   strokeDasharray="4 4"
                   strokeWidth={1.5}
-                  label={{ value: "5-yr record", fill: MUTED, fontSize: 12, position: "insideTopRight" }}
+                  label={{ value: "5-yr record", fill: MUTED, fontSize: 10, position: "insideTopRight" }}
                 />
                 <ReferenceLine
                   x={72}
                   stroke={GOLD}
                   strokeDasharray="4 4"
                   strokeWidth={1.5}
-                  label={{ value: "CIO tenure", fill: MUTED, fontSize: 12, position: "insideTopLeft" }}
+                  label={{ value: "CIO tenure", fill: MUTED, fontSize: 10, position: "insideTopLeft" }}
                 />
                 <ReferenceLine x={p.trackRecord} stroke={NAVY} strokeDasharray="2 2" />
                 <Line
@@ -178,13 +178,13 @@ export function EstimatorTab() {
                   x={0.5}
                   stroke={OX}
                   strokeDasharray="4 4"
-                  label={{ value: "0.50", fill: MUTED, fontSize: 12, position: "top" }}
+                  label={{ value: "0.50", fill: MUTED, fontSize: 10, position: "top" }}
                 />
                 <ReferenceLine
                   x={p.screenThreshold}
                   stroke={GOLD}
                   strokeDasharray="4 4"
-                  label={{ value: "Screen", fill: MUTED, fontSize: 12, position: "top" }}
+                  label={{ value: "Screen", fill: MUTED, fontSize: 10, position: "top" }}
                 />
                 <Bar dataKey="count" name="Managers" fill={NAVY} maxBarSize={18} isAnimationActive={false} />
               </BarChart>

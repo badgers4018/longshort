@@ -82,6 +82,16 @@ export function mapIndustry(p: IndustryToggles): IndustryPoint[] {
   });
 }
 
+export function crowdingAxis(series: IndustryPoint[]): [number, number] {
+  const vals = series.map((p) => p.crowding).filter((n): n is number => n != null && Number.isFinite(n));
+  if (!vals.length) return [0, 100];
+  const lo = Math.min(...vals);
+  const hi = Math.max(...vals);
+  const start = Math.max(0, lo * 0.7);
+  const pad = Math.max(0.4, (hi - start) * 0.08);
+  return [start, hi + pad];
+}
+
 export function latestStats(p: IndustryToggles) {
   const series = mapIndustry(p);
   const first = series[0];
@@ -94,6 +104,7 @@ export function latestStats(p: IndustryToggles) {
     lastRaw,
     firstRaw,
     series,
+    crowdingDomain: crowdingAxis(series),
     passiveNow: last.passive ?? 0,
     leftoverNow: last.leftover,
     crowdingNow: last.crowding,

@@ -97,6 +97,8 @@ export function IndustryTab() {
                   yAxisId="r"
                   orientation="right"
                   tick={CHART_TICK}
+                  domain={s.crowdingDomain}
+                  allowDataOverflow
                   tickFormatter={(v) => `${formatChartNum(Number(v), 0)}%`}
                 />
                 <Tooltip

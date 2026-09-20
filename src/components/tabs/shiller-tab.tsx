@@ -207,7 +207,7 @@ export function ShillerTab() {
                   stroke={NAVY}
                   strokeDasharray="4 4"
                   strokeWidth={1.5}
-                  label={{ value: "1.00×", position: "top", fill: MUTED, fontSize: 12 }}
+                  label={{ value: "1.00×", position: "top", fill: MUTED, fontSize: 10 }}
                 />
                 <Tooltip content={<ChartTip format={(n) => formatChartNum(n, 2)} />} />
                 <Bar dataKey="n" name="Windows" fill={NAVY} radius={[3, 3, 0, 0]} isAnimationActive={false} />

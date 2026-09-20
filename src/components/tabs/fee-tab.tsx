@@ -112,7 +112,7 @@ export function FeeTab() {
                   stroke={NAVY}
                   strokeDasharray="4 4"
                   strokeWidth={1.5}
-                  label={{ value: "Index", fill: MUTED, fontSize: 12, position: "insideTopRight" }}
+                  label={{ value: "Index", fill: MUTED, fontSize: 10, position: "insideTopRight" }}
                 />
                 <Tooltip
                   cursor={{ fill: "rgba(28,28,28,0.04)" }}

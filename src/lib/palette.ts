@@ -9,7 +9,7 @@ export const WIN = "#2F4A3C";
 
 export const CHART_TICK = {
   fill: MUTED,
-  fontSize: 13,
+  fontSize: 10,
   fontFamily: 'IBM Plex Sans, "Segoe UI", system-ui, sans-serif',
 } as const;
 
@@ -20,7 +20,7 @@ export const CHART_LEGEND = {
     backgroundColor: "transparent",
     border: "none",
     boxShadow: "none",
-    fontSize: 11,
+    fontSize: 10,
     fontFamily: 'IBM Plex Sans, "Segoe UI", system-ui, sans-serif',
     color: MUTED,
     paddingTop: 4,
