@@ -91,6 +91,7 @@ export type ReflexivityParams = {
 export type IndustryParams = {
   showPassiveCore: boolean;
   showCits: boolean;
+  showWiderPassive: boolean;
   showHfEquity: boolean;
   showHfLongs: boolean;
   showHfDerivs: boolean;

@@ -1,11 +1,12 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { INDUSTRY } from "../../data/industry.ts";
-import { crowdingAxis, crowdingOccupancy, latestStats, mapIndustry } from "./industry.ts";
+import { crowdingAxis, crowdingOccupancy, latestStats, mapIndustry, widerPassivePct } from "./industry.ts";
 
 const defaults = {
   showPassiveCore: true,
   showCits: false,
+  showWiderPassive: false,
   showHfEquity: true,
   showHfLongs: true,
   showHfDerivs: false,
@@ -16,6 +17,16 @@ test("frozen series runs 2012Q4–2025Q4", () => {
   assert.equal(INDUSTRY[0].date, "2012Q4");
   assert.equal(INDUSTRY.at(-1)?.date, "2025Q4");
   assert.ok(INDUSTRY.length >= 50);
+});
+
+test("wider passive doubles registered and adds CITs once", () => {
+  const last = INDUSTRY.at(-1)!;
+  const w = widerPassivePct(last);
+  const cit = (100 * (last.citEquity ?? 0)) / last.marketCap;
+  assert.ok(Math.abs(w - (2 * last.passivePct + cit)) < 1e-9);
+  const on = latestStats({ ...defaults, showWiderPassive: true });
+  assert.ok(Math.abs(on.leftoverNow - (100 - w)) < 1e-9);
+  assert.ok(on.widerNow > on.passiveNow * 2);
 });
 
 test("ICI passive share rose; residual shrank", () => {

@@ -14,7 +14,7 @@ import { TabHeader, Stat } from "@/components/headline";
 import { ChartTip } from "@/components/charts/chart-tip";
 import { latestStats, type IndustryToggles } from "@/lib/calc/industry";
 import { INDUSTRY_VINTAGE } from "@/data/industry";
-import { CHART_TICK, GOLD, LINE, MUTED, NAVY, OX, CHART_LEGEND } from "@/lib/palette";
+import { CHART_TICK, GOLD, LINE, MUTED, NAVY, OX, WIN, CHART_LEGEND } from "@/lib/palette";
 import { formatChartNum, formatPct } from "@/lib/utils";
 import { useParams } from "@/store/use-params";
 
@@ -30,6 +30,7 @@ export function IndustryTab() {
   const toggles: IndustryToggles = {
     showPassiveCore: p.showPassiveCore,
     showCits: p.showCits,
+    showWiderPassive: p.showWiderPassive,
     showHfEquity: p.showHfEquity,
     showHfLongs: p.showHfLongs,
     showHfDerivs: p.showHfDerivs,
@@ -38,6 +39,7 @@ export function IndustryTab() {
   const s = useMemo(() => latestStats(toggles), [
     p.showPassiveCore,
     p.showCits,
+    p.showWiderPassive,
     p.showHfEquity,
     p.showHfLongs,
     p.showHfDerivs,
@@ -52,13 +54,18 @@ export function IndustryTab() {
       <section ref={rootRef} className="space-y-6">
         <TabHeader
           kicker="Appendix · not one of the essay's seven"
-          text={`Registered index funds and ETFs are ${formatPct(s.passiveNow, 0)} of listed US equity, up from ${formatPct(s.firstRaw.passivePct, 0)} in 2012. That is the ICI slice. Mike Green's ~54% (Jan 2026) counts separate accounts and index derivatives this line does not.`}
+          text={`Registered index funds are ${formatPct(s.passiveNow, 0)}. Doubling that book for separate accounts and adding CITs is ${formatPct(s.widerNow, 0)}. Green's ~54% still includes index derivatives this estimate does not.`}
           filename="industry-float.png"
           targetRef={rootRef}
         />
 
         <div className="grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2">
-          <Stat label="Registered index" value={formatPct(s.passiveNow, 0)} tone="gold" hint="ICI Fig 2.6 — domestic index funds + ETFs only" />
+          <Stat
+            label="Wider passive (est.)"
+            value={formatPct(s.widerNow, 0)}
+            tone="win"
+            hint="Registered × 2 for separate accounts, plus CITs. Not Green's 54%."
+          />
           <Stat label="Residual float" value={formatPct(s.leftoverNow, 0)} hint="Wilshire-comparable listed US minus passive on" />
           <Stat
             label="HF occupancy of residual"
@@ -116,6 +123,9 @@ export function IndustryTab() {
                 {p.showPassiveCore ? (
                   <Line yAxisId="l" type="monotone" dataKey="passive" name="Index funds + ETFs" stroke={GOLD} strokeWidth={2} dot={false} isAnimationActive={false} connectNulls />
                 ) : null}
+                {p.showWiderPassive ? (
+                  <Line yAxisId="l" type="monotone" dataKey="wider" name="Registered ×2 + CITs" stroke={WIN} strokeWidth={2} dot={false} isAnimationActive={false} connectNulls />
+                ) : null}
                 {p.showCits ? (
                   <Line yAxisId="l" type="monotone" dataKey="citPct" name="CIT equity (est.)" stroke={GOLD} strokeDasharray="4 3" strokeWidth={1.5} dot={false} isAnimationActive={false} connectNulls />
                 ) : null}
@@ -133,7 +143,7 @@ export function IndustryTab() {
             </ResponsiveContainer>
           </div>
           <p className="text-muted mt-2 text-sm leading-relaxed">
-            Residual is listed US equity minus whichever passive lines are on. The gold line is registered products, about 19% — not the whole price-insensitive pile. Chinco and Sammon put reconstitution trading near 35% on the day and about 45% over five days. Green’s January 2026 estimate is ~54%, including separate accounts of roughly the same size as the registered book, plus CITs and index derivatives. Turning CITs on here adds about 5 points, to the mid-20s. It does not get you to 54.
+            The green line doubles the registered book for separate accounts and adds CITs once. It ends near {formatPct(s.widerNow, 0)}. It is an estimate, not a measured series, and it is still short of Green's ~54% because index futures, swaps, and options are not in it. When that line is on, residual uses it instead of the gold line so the registered book is not counted twice.
           </p>
         </div>
 
@@ -183,6 +193,7 @@ export function IndustryTab() {
         <h3 className="font-display text-title font-medium text-navy">Industry</h3>
         <Toggle label="Index funds + equity ETFs" value={p.showPassiveCore} onChange={(v) => set("showPassiveCore", v)} yes="On" no="Off" />
         <Toggle label="401(k) CIT equity" value={p.showCits} onChange={(v) => set("showCits", v)} yes="On" no="Off" />
+        <Toggle label="Registered ×2 + CITs" value={p.showWiderPassive} onChange={(v) => set("showWiderPassive", v)} yes="On" no="Off" />
         <Toggle label="HF equity capital" value={p.showHfEquity} onChange={(v) => set("showHfEquity", v)} yes="On" no="Off" />
         <Toggle label="HF long assets" value={p.showHfLongs} onChange={(v) => set("showHfLongs", v)} yes="On" no="Off" />
         <Toggle label="HF + derivative notionals" value={p.showHfDerivs} onChange={(v) => set("showHfDerivs", v)} yes="On" no="Off" />

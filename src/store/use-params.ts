@@ -49,6 +49,7 @@ export const DEFAULTS: AppParams = {
   showCounterfactual: true,
   showPassiveCore: true,
   showCits: false,
+  showWiderPassive: true,
   showHfEquity: true,
   showHfLongs: true,
   showHfDerivs: false,

@@ -3,6 +3,7 @@ import { INDUSTRY, type IndustryRow } from "../../data/industry.ts";
 export type IndustryToggles = {
   showPassiveCore: boolean;
   showCits: boolean;
+  showWiderPassive: boolean;
   showHfEquity: boolean;
   showHfLongs: boolean;
   showHfDerivs: boolean;
@@ -16,6 +17,7 @@ export type IndustryPoint = {
   marketCap: number;
   passive: number | null;
   citPct: number | null;
+  wider: number | null;
   leftover: number;
   hfNavPct: number | null;
   hfLongPct: number | null;
@@ -31,7 +33,13 @@ function citPct(r: IndustryRow) {
   return (100 * r.citEquity) / r.marketCap;
 }
 
+/** Separate accounts ≈ the registered book (Green). CITs added once, not doubled. */
+export function widerPassivePct(r: IndustryRow) {
+  return 2 * r.passivePct + (citPct(r) ?? 0);
+}
+
 export function passiveShare(r: IndustryRow, p: IndustryToggles) {
+  if (p.showWiderPassive) return widerPassivePct(r);
   let s = 0;
   if (p.showPassiveCore) s += r.passivePct;
   if (p.showCits) {
@@ -70,6 +78,7 @@ export function mapIndustry(p: IndustryToggles): IndustryPoint[] {
       marketCap: r.marketCap,
       passive: p.showPassiveCore ? r.passivePct : null,
       citPct: p.showCits ? c : null,
+      wider: p.showWiderPassive ? widerPassivePct(r) : null,
       leftover: 100 - pass,
       hfNavPct: p.showHfEquity ? (100 * r.hfNav) / r.marketCap : null,
       hfLongPct: p.showHfLongs ? (100 * r.hfAssets) / r.marketCap : null,
@@ -118,6 +127,7 @@ export function latestStats(p: IndustryToggles) {
     crowdingDomain: crowdingAxis(series),
     leverageDomain: leverageAxis(series, p.includeDerivsInLeverage),
     passiveNow: last.passive ?? 0,
+    widerNow: widerPassivePct(lastRaw),
     leftoverNow: last.leftover,
     crowdingNow: last.crowding,
     levNow: p.includeDerivsInLeverage ? last.leverageWithDeriv : last.leverage,
