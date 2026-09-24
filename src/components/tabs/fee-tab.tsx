@@ -229,8 +229,9 @@ export function FeeTab() {
         <Field label="Holding period" value={p.holdingPeriod} min={1} max={30} step={1} onChange={(v) => set("holdingPeriod", v)} format={(v) => `${v} yr`} />
         <p className="text-muted text-sm leading-relaxed">
           Weighted borrow {d.weightedBorrowBps.toFixed(0)} bps on {d.shortExposure.toFixed(2)}× short =
-          {" "}{formatPct(d.borrowCost, 2)} of NAV. Gross return {formatPct(d.grossReturn)} = net × beta +
-          alpha.
+          {" "}{formatPct(d.borrowCost, 2)} of NAV. Gross return {formatPct(d.grossReturn, 2)} ={" "}
+          {p.netExposure.toFixed(1)} × {formatPct(p.equityBeta, 1)} beta + {formatPct(p.grossAlpha, 1)} alpha.
+          No short rebate in that sum.
         </p>
       </aside>
     </div>

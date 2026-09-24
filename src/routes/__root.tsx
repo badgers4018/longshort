@@ -1,9 +1,10 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
+import { SERIES_TITLE } from "@/lib/series";
 import appCss from "../styles.css?url";
 
-const APP_NAME = "The Multiplicative Indictment";
+const APP_NAME = SERIES_TITLE;
 
 export const Route = createRootRoute({
   head: () => ({
@@ -16,7 +17,7 @@ export const Route = createRootRoute({
         name: "description",
         content: "How much alpha does your hedge fund need to beat the index? Run the numbers.",
       },
-      { property: "og:title", content: "The Multiplicative Indictment — Calculator" },
+      { property: "og:title", content: SERIES_TITLE },
       {
         property: "og:description",
         content: "How much alpha does your hedge fund need to beat the index? Run the numbers.",

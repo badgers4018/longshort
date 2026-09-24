@@ -52,7 +52,7 @@ export function IndustryTab() {
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
       <section ref={rootRef} className="space-y-6">
         <TabHeader
-          kicker="Tab 8 · Industry float"
+          kicker="Appendix · not one of the essay's seven"
           text={`Price-insensitive capital is ${formatPct(s.passiveNow, 0)} of listed US equity, up from ${formatPct(s.firstRaw.passivePct, 0)} in 2012. Residual float shrank ${formatPct(leftoverDrop, 0)}. Form PF books are ${s.levNow.toFixed(1)}× levered.`}
           filename="industry-float.png"
           targetRef={rootRef}

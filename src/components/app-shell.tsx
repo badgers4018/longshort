@@ -13,9 +13,10 @@ import { WealthTab } from "@/components/tabs/wealth-tab";
 import { Button } from "@/components/ui/button";
 import { cn, formatPct } from "@/lib/utils";
 import { useParams } from "@/store/use-params";
+import { PART_TITLE, SERIES_TITLE } from "@/lib/series";
 import type { TabId } from "@/lib/calc/types";
 
-const TABS: { id: TabId; label: string }[] = [
+const ESSAY_TABS: { id: TabId; label: string }[] = [
   { id: "fees", label: "Fee decomposition" },
   { id: "grid", label: "Sensitivity" },
   { id: "wealth", label: "Terminal wealth" },
@@ -23,8 +24,9 @@ const TABS: { id: TabId; label: string }[] = [
   { id: "history", label: "Shiller windows" },
   { id: "estimator", label: "Estimator" },
   { id: "reflexivity", label: "Reflexivity" },
-  { id: "industry", label: "Industry" },
 ];
+
+const TABS: { id: TabId; label: string }[] = [...ESSAY_TABS, { id: "industry", label: "Industry" }];
 
 const tabBtn =
   "min-h-12 px-2 py-3 text-center font-ui text-[15px] font-semibold leading-snug tracking-tight sm:text-sm transition-colors duration-[var(--motion-quick)] ease-[var(--ease-out)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/35 focus-visible:ring-offset-2";
@@ -39,7 +41,7 @@ export function AppShell({ urlTab }: { urlTab?: TabId }) {
   useEffect(() => {
     if (tab !== p.tab) p.setTab(tab);
     const label = TABS.find((t) => t.id === tab)?.label ?? "Calculator";
-    document.title = `${label} · The Multiplicative Indictment`;
+    document.title = `${label} · ${SERIES_TITLE}`;
   }, [tab]);
 
   function setTab(id: TabId) {
@@ -66,8 +68,11 @@ export function AppShell({ urlTab }: { urlTab?: TabId }) {
           <div className="mt-6 font-ui text-xs font-semibold tracking-mark text-navy uppercase">
             Capital Misallocation
           </div>
-          <h1 className="mt-3 font-display text-display font-medium tracking-[-0.025em] text-navy leading-[1.15]">
-            The Multiplicative Indictment
+          <p className="text-muted mt-3 font-ui text-sm font-medium tracking-kicker uppercase">
+            The Causal Barbell — Part 1
+          </p>
+          <h1 className="mt-2 font-display text-display font-medium tracking-[-0.025em] text-navy leading-[1.15]">
+            {PART_TITLE}
           </h1>
           <p className="text-muted mx-auto mt-4 max-w-md text-base leading-7">
             How much alpha does your hedge fund need to beat the index? You supply the assumptions. The
@@ -78,9 +83,9 @@ export function AppShell({ urlTab }: { urlTab?: TabId }) {
         <div
           role="tablist"
           aria-label="Calculator tabs"
-          className="mb-6 grid grid-cols-2 border-2 border-navy sm:grid-cols-4 xl:grid-cols-8"
+          className="mb-3 grid grid-cols-2 border-2 border-navy sm:grid-cols-4 xl:grid-cols-7"
         >
-          {TABS.map((t) => (
+          {ESSAY_TABS.map((t) => (
             <button
               key={t.id}
               type="button"
@@ -98,6 +103,18 @@ export function AppShell({ urlTab }: { urlTab?: TabId }) {
               {t.label}
             </button>
           ))}
+        </div>
+        <div className="mb-6 text-right">
+          <button
+            type="button"
+            onClick={() => setTab("industry")}
+            className={cn(
+              "font-ui text-sm font-semibold tracking-tight underline-offset-4 hover:underline",
+              tab === "industry" ? "text-navy" : "text-muted",
+            )}
+          >
+            Appendix · Industry float
+          </button>
         </div>
 
         <div className="mb-8">
@@ -182,7 +199,7 @@ export function AppShell({ urlTab }: { urlTab?: TabId }) {
             Nobody can attack assumptions that are yours.
           </p>
           <p className="text-subtle mt-3 font-ui text-sm tracking-footer">
-            Capital Misallocation · Monte Carlo seed 20260910 · Shiller real total returns, 1871–2023
+            Capital Misallocation — The Causal Barbell, Part 1 · Monte Carlo seed 20260910 · Shiller real total returns, 1871–2023
           </p>
         </footer>
       </div>

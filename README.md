@@ -1,4 +1,4 @@
-# The Multiplicative Indictment
+# The Causal Barbell — Part 1: The Multiplicative Indictment
 
 Interactive calculator for [Capital Misallocation](https://capitalmisallocation.com).  
 Live: **https://longshort.capitalmisallocation.com**

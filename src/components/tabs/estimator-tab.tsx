@@ -243,7 +243,8 @@ export function EstimatorTab() {
         />
         <p className="text-muted text-sm leading-relaxed">
           1,000 managers. True Sharpe drawn from N({p.trueSharpeM.toFixed(2)}, {p.trueSharpeS.toFixed(2)}). Monthly
-          returns from {distLabel(p.returnDist)}. Seed {MASTER_SEED}.
+          returns from {distLabel(p.returnDist)}. Default screen is 1.50 — at these priors that is an 80%
+          false-positive rate. A screen of 2.00 selects nobody. Seed {MASTER_SEED}.
         </p>
       </aside>
     </div>
