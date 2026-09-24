@@ -5,7 +5,13 @@ Live: **https://longshort.capitalmisallocation.com**
 
 How much alpha does a long-short book need to beat the index? You supply the assumptions. The arithmetic does not negotiate.
 
-Five tabs: fee decomposition, sensitivity grid, terminal-wealth Monte Carlo, liquidation cascade, Shiller rolling windows.
+Seven essay tabs, plus an appendix (Industry float) linked under the tab bar — not one of the seven.
+
+## Locked defaults
+
+- Management fee **1.5%**, not 2.0%. 2.0 is the legacy single-manager case.
+- Sharpe screen **1.5**. At the prior (mean 0.10, sd 0.30, skew-normal) that is an **80%** false-positive rate. A screen of 2.0 selects nobody.
+- Gross return is net × beta + alpha. Default is 0.5 × 9% + 6% = **10.5%**. No short rebate in that sum.
 
 ## Local
 
