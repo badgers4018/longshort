@@ -81,17 +81,20 @@ export function IndustryTab() {
           </h3>
           <div className="h-72 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={s.series} margin={{ top: 8, right: 8, left: -8, bottom: 36 }}>
+              <LineChart data={s.series} margin={{ top: 12, right: 8, left: 4, bottom: 28 }}>
                 <CartesianGrid stroke={LINE} vertical={false} />
                 <XAxis
                   dataKey="date"
                   ticks={YEAR_TICKS}
                   interval={0}
                   tick={CHART_TICK}
+                  tickMargin={6}
+                  padding={{ left: 12, right: 28 }}
                   tickFormatter={(v) => String(v).slice(0, 4)}
                 />
                 <YAxis
                   yAxisId="l"
+                  width={36}
                   tick={CHART_TICK}
                   domain={[0, 100]}
                   tickFormatter={(v) => `${formatChartNum(Number(v), 0)}%`}
@@ -99,6 +102,7 @@ export function IndustryTab() {
                 <YAxis
                   yAxisId="r"
                   orientation="right"
+                  width={36}
                   tick={CHART_TICK}
                   domain={s.crowdingDomain}
                   allowDataOverflow
@@ -140,16 +144,24 @@ export function IndustryTab() {
           </h3>
           <div className="h-48 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-56">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={s.series} margin={{ top: 8, right: 8, left: -8, bottom: 32 }}>
+              <LineChart data={s.series} margin={{ top: 12, right: 12, left: 4, bottom: 28 }}>
                 <CartesianGrid stroke={LINE} vertical={false} />
                 <XAxis
                   dataKey="date"
                   ticks={YEAR_TICKS}
                   interval={0}
                   tick={CHART_TICK}
+                  tickMargin={6}
+                  padding={{ left: 12, right: 28 }}
                   tickFormatter={(v) => String(v).slice(0, 4)}
                 />
-                <YAxis tick={CHART_TICK} tickFormatter={(v) => `${formatChartNum(Number(v), 1)}×`} />
+                <YAxis
+                  width={36}
+                  tick={CHART_TICK}
+                  domain={s.leverageDomain}
+                  allowDataOverflow
+                  tickFormatter={(v) => `${formatChartNum(Number(v), 1)}×`}
+                />
                 <Tooltip
                   cursor={{ fill: "rgba(28,28,28,0.04)" }}
                   content={<ChartTip format={(n) => `${formatChartNum(n, 2)}×`} />}

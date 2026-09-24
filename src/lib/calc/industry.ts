@@ -82,14 +82,25 @@ export function mapIndustry(p: IndustryToggles): IndustryPoint[] {
   });
 }
 
-export function crowdingAxis(series: IndustryPoint[]): [number, number] {
-  const vals = series.map((p) => p.crowding).filter((n): n is number => n != null && Number.isFinite(n));
-  if (!vals.length) return [0, 100];
+function zoomFromLow(vals: number[], empty: [number, number]): [number, number] {
+  if (!vals.length) return empty;
   const lo = Math.min(...vals);
   const hi = Math.max(...vals);
   const start = Math.max(0, lo * 0.7);
-  const pad = Math.max(0.4, (hi - start) * 0.08);
+  const pad = Math.max(hi * 0.02, (hi - start) * 0.08);
   return [start, hi + pad];
+}
+
+export function crowdingAxis(series: IndustryPoint[]): [number, number] {
+  const vals = series.map((p) => p.crowding).filter((n): n is number => n != null && Number.isFinite(n));
+  return zoomFromLow(vals, [0, 100]);
+}
+
+export function leverageAxis(series: IndustryPoint[], includeDerivs: boolean): [number, number] {
+  const vals = series.flatMap((p) =>
+    includeDerivs ? [p.leverage, p.leverageWithDeriv] : [p.leverage],
+  );
+  return zoomFromLow(vals, [0, 3]);
 }
 
 export function latestStats(p: IndustryToggles) {
@@ -105,6 +116,7 @@ export function latestStats(p: IndustryToggles) {
     firstRaw,
     series,
     crowdingDomain: crowdingAxis(series),
+    leverageDomain: leverageAxis(series, p.includeDerivsInLeverage),
     passiveNow: last.passive ?? 0,
     leftoverNow: last.leftover,
     crowdingNow: last.crowding,
