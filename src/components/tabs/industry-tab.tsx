@@ -46,20 +46,19 @@ export function IndustryTab() {
 
   const set = p.setParam;
   const crowding = s.crowdingNow;
-  const leftoverDrop = s.first.leftover - s.leftoverNow;
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
       <section ref={rootRef} className="space-y-6">
         <TabHeader
           kicker="Appendix · not one of the essay's seven"
-          text={`Price-insensitive capital is ${formatPct(s.passiveNow, 0)} of listed US equity, up from ${formatPct(s.firstRaw.passivePct, 0)} in 2012. Residual float shrank ${formatPct(leftoverDrop, 0)}. Form PF books are ${s.levNow.toFixed(1)}× levered.`}
+          text={`Registered index funds and ETFs are ${formatPct(s.passiveNow, 0)} of listed US equity, up from ${formatPct(s.firstRaw.passivePct, 0)} in 2012. That is the ICI slice. Mike Green's ~54% (Jan 2026) counts separate accounts and index derivatives this line does not.`}
           filename="industry-float.png"
           targetRef={rootRef}
         />
 
         <div className="grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2">
-          <Stat label="Passive share" value={formatPct(s.passiveNow, 0)} tone="gold" hint="ICI index domestic equity funds + ETFs" />
+          <Stat label="Registered index" value={formatPct(s.passiveNow, 0)} tone="gold" hint="ICI Fig 2.6 — domestic index funds + ETFs only" />
           <Stat label="Residual float" value={formatPct(s.leftoverNow, 0)} hint="Wilshire-comparable listed US minus passive on" />
           <Stat
             label="HF occupancy of residual"
@@ -134,7 +133,7 @@ export function IndustryTab() {
             </ResponsiveContainer>
           </div>
           <p className="text-muted mt-2 text-sm leading-relaxed">
-            Residual is listed US equity minus whichever passive lines are on. Hedge-fund equity capital and longs are not slices of that pie — they include credit, cash, and global. Crowding is longs sitting on the leftover cap. Toggle CITs on and the red line should jump.
+            Residual is listed US equity minus whichever passive lines are on. The gold line is registered products, about 19% — not the whole price-insensitive pile. Chinco and Sammon put reconstitution trading near 35% on the day and about 45% over five days. Green’s January 2026 estimate is ~54%, including separate accounts of roughly the same size as the registered book, plus CITs and index derivatives. Turning CITs on here adds about 5 points, to the mid-20s. It does not get you to 54.
           </p>
         </div>
 
@@ -199,7 +198,7 @@ export function IndustryTab() {
           {trillions(s.lastRaw.hfAssets)}. {INDUSTRY_VINTAGE}.
         </p>
         <p className="text-muted text-sm leading-relaxed">
-          Passive is ICI Fig 2.6 (domestic index MF + ETF). CITs are 60% of ICI total CIT AUM, annual, interpolated — off until you want the wider pile. Market cap is Fed L.224 public corporate equities (listed-US, Wilshire universe).
+          Passive on this chart is ICI Fig 2.6 (domestic index mutual funds + ETFs) — about 19% of the market. Mike Green’s ~54% (Excess Returns, January 2026) is a different object: separate accounts he treats as roughly the same size as that registered book, plus CITs and index derivatives. CITs here are 60% of ICI total CIT assets, annual, interpolated. Market cap is Fed L.224 public corporate equities.
         </p>
       </aside>
     </div>
