@@ -18,6 +18,9 @@ export const Route = createRootRoute({
         content: "How much alpha does your hedge fund need to beat the index? Run the numbers.",
       },
       { property: "og:title", content: SERIES_TITLE },
+      { name: "twitter:title", content: SERIES_TITLE },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "/og.jpg" },
       {
         property: "og:description",
         content: "How much alpha does your hedge fund need to beat the index? Run the numbers.",
