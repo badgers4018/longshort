@@ -37,6 +37,9 @@ export type BookParams = {
   podNetting: boolean;
   passThrough: number;
   holdingPeriod: number;
+  showShortRebate: boolean;
+  rebateSpreadBps: number;
+  debitSpreadBps: number;
 };
 
 export type ConvexityParams = {
@@ -116,6 +119,9 @@ export type FeeBreakdown = {
   longExposure: number;
   weightedBorrowBps: number;
   borrowCost: number;
+  rebateIncome: number;
+  financingCost: number;
+  marginDebit: number;
   mgmt: number;
   passThrough: number;
   incentive: number;

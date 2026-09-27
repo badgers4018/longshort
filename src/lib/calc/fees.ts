@@ -30,8 +30,33 @@ export function borrowCostPct(input: FeeInputs) {
   return (short * bps) / 100;
 }
 
+export function marginDebit(net: number, gross: number) {
+  return Math.max(0, longExposure(net, gross) - 1);
+}
+
+/** Mode (c): no idle cash. Rebate on short proceeds, financing on the debit. */
+export function carryPct(input: FeeInputs) {
+  const s = shortExposure(input.netExposure, input.grossExposure);
+  const d = marginDebit(input.netExposure, input.grossExposure);
+  const b = weightedBorrowBps(input.borrowGcBps, input.borrowCrowdedBps, input.crowdedWeight) / 100;
+  const rebateRate = input.riskFree - b - input.rebateSpreadBps / 100;
+  const financingRate = input.riskFree + input.debitSpreadBps / 100;
+  return {
+    short: s,
+    debit: d,
+    borrowPct: b,
+    rebateRate,
+    financingRate,
+    rebateIncome: s * rebateRate,
+    financingCost: d * financingRate,
+  };
+}
+
 export function grossReturnPct(input: FeeInputs) {
-  return input.netExposure * input.equityBeta + input.grossAlpha;
+  const beta = input.netExposure * input.equityBeta;
+  if (!input.showShortRebate) return beta + input.grossAlpha;
+  const c = carryPct(input);
+  return beta + input.grossAlpha + c.rebateIncome - c.financingCost;
 }
 
 export function incentivePct(input: FeeInputs, gross: number, fixedCosts: number) {
@@ -79,13 +104,18 @@ export function decompose(input: FeeInputs): FeeBreakdown {
     input.crowdedWeight,
   );
   const borrow = borrowCostPct(input);
+  const carry = carryPct(input);
+  const rebateOn = input.showShortRebate;
+  const rebateIncome = rebateOn ? carry.rebateIncome : 0;
+  const financingCost = rebateOn ? carry.financingCost : 0;
   const mgmt = input.mgmtFee;
   const pass = input.passThrough;
   const betaContribution = input.netExposure * input.equityBeta;
-  const gross = betaContribution + input.grossAlpha;
-  const fixed = mgmt + pass + borrow;
+  const gross = betaContribution + input.grossAlpha + rebateIncome - financingCost;
+  const stockLoan = rebateOn ? 0 : borrow;
+  const fixed = mgmt + pass + stockLoan;
   const incentive = incentivePct(input, gross, fixed);
-  const totalFeeLoad = mgmt + incentive + pass + borrow;
+  const totalFeeLoad = mgmt + incentive + pass + stockLoan;
   const netArith = gross - totalFeeLoad;
   const sig = input.portfolioVol / 100;
   const varDrag = 0.5 * sig * sig * 100;
@@ -108,6 +138,9 @@ export function decompose(input: FeeInputs): FeeBreakdown {
     longExposure: long,
     weightedBorrowBps: wBps,
     borrowCost: borrow,
+    rebateIncome,
+    financingCost,
+    marginDebit: carry.debit,
     mgmt,
     passThrough: pass,
     incentive,
@@ -167,6 +200,9 @@ export function fromApp(p: AppParams): FeeInputs {
     podNetting: p.podNetting,
     passThrough: p.passThrough,
     holdingPeriod: p.holdingPeriod,
+    showShortRebate: p.showShortRebate,
+    rebateSpreadBps: p.rebateSpreadBps,
+    debitSpreadBps: p.debitSpreadBps,
   };
 }
 

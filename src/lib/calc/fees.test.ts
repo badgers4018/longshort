@@ -18,6 +18,9 @@ const input: FeeInputs = {
   podNetting: true,
   passThrough: 0,
   holdingPeriod: 10,
+  showShortRebate: false,
+  rebateSpreadBps: 25,
+  debitSpreadBps: 50,
 };
 
 test("default book: weighted borrow is 80 bps", () => {
@@ -63,4 +66,34 @@ test("unlevered book needs less alpha than a 0.5-net short book", () => {
   const unlev = breakEvenAlpha(unleveredBook(input));
   assert.ok(unlev < book, `${unlev} !< ${book}`);
   assert.ok(unlev > 1 && unlev < 5, `unlev=${unlev}`);
+});
+
+test("no idle cash: example 1 carry lines", () => {
+  const d = decompose({ ...input, showShortRebate: true });
+  assert.ok(Math.abs(d.marginDebit - 0.25) < 1e-12);
+  assert.ok(Math.abs(d.rebateIncome - 2.2125) < 1e-9);
+  assert.ok(Math.abs(d.financingCost - 1.125) < 1e-9);
+  assert.ok(Math.abs(d.grossReturn - 11.5875) < 1e-9);
+  assert.ok(Math.abs(d.netArith - 8.07) < 1e-9);
+});
+
+test("zero PB spreads: mode (c) equals net-cash mode (b)", () => {
+  const c = decompose({ ...input, showShortRebate: true, rebateSpreadBps: 0, debitSpreadBps: 0 });
+  const s = 0.75;
+  const b = 0.8;
+  const modeB = 0.5 * 9 + 6 - s * b + (1 - 0.5) * 4;
+  assert.ok(Math.abs(c.grossReturn - modeB) < 1e-9);
+});
+
+test("essay mode ignores the cash rate", () => {
+  const a = decompose(input);
+  const moved = decompose({ ...input, riskFree: 0 });
+  assert.equal(a.grossReturn, moved.grossReturn);
+  assert.equal(a.netArith, moved.netArith);
+});
+
+test("cash at zero makes no-idle-cash worse than the essay book", () => {
+  const essay = decompose(input);
+  const starved = decompose({ ...input, showShortRebate: true, riskFree: 0 });
+  assert.ok(starved.netArith < essay.netArith);
 });

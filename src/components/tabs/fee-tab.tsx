@@ -29,12 +29,18 @@ export function FeeTab() {
   const waterfall = [
     { name: "Alpha", value: p.grossAlpha, fill: GOLD },
     { name: "Beta", value: d.betaContribution, fill: NAVY },
+    ...(p.showShortRebate
+      ? [
+          { name: "Rebate", value: d.rebateIncome, fill: GOLD },
+          { name: "Financing", value: -d.financingCost, fill: OX },
+        ]
+      : []),
     { name: "Mgmt", value: -d.mgmt, fill: OX },
     { name: "Incentive", value: -d.incentive, fill: OX },
     ...(p.showPassThrough || d.passThrough > 0
       ? [{ name: "Pass-thru", value: -d.passThrough, fill: OX }]
       : []),
-    { name: "Borrow", value: -d.borrowCost, fill: OX },
+    ...(p.showShortRebate ? [] : [{ name: "Borrow", value: -d.borrowCost, fill: OX }]),
     { name: "Drag", value: -d.varDrag, fill: OX },
   ].reduce<{ name: string; base: number; rise: number; fill: string; label: number }[]>(
     (acc, step) => {
@@ -209,6 +215,13 @@ export function FeeTab() {
         <Field label="Borrow — GC" value={p.borrowGcBps} min={0} max={100} step={5} onChange={(v) => set("borrowGcBps", v)} format={(v) => `${v} bps`} />
         <Field label="Borrow — crowded names" value={p.borrowCrowdedBps} min={50} max={1000} step={25} onChange={(v) => set("borrowCrowdedBps", v)} format={(v) => `${v} bps`} />
         <Field label="Crowded name weight" value={p.crowdedWeight} min={0} max={50} step={5} onChange={(v) => set("crowdedWeight", v)} format={(v) => formatPct(v, 0)} />
+        <Toggle label="Short rebate" value={p.showShortRebate} onChange={(v) => set("showShortRebate", v)} yes="On" no="Essay" />
+        {p.showShortRebate ? (
+          <>
+            <Field label="PB rebate spread" value={p.rebateSpreadBps} min={0} max={100} step={5} onChange={(v) => set("rebateSpreadBps", v)} format={(v) => `${v} bps`} />
+            <Field label="PB debit spread" value={p.debitSpreadBps} min={0} max={100} step={5} onChange={(v) => set("debitSpreadBps", v)} format={(v) => `${v} bps`} />
+          </>
+        ) : null}
         <Field label="Management fee" value={p.mgmtFee} min={0} max={5} step={0.25} onChange={(v) => set("mgmtFee", v)} format={(v) => formatPct(v, 2)} />
         <Field label="Incentive fee" value={p.incentiveFee} min={0} max={50} step={5} onChange={(v) => set("incentiveFee", v)} format={(v) => formatPct(v, 0)} />
         <Toggle label="Pod-level netting" value={p.podNetting} onChange={(v) => set("podNetting", v)} />
@@ -228,10 +241,15 @@ export function FeeTab() {
         ) : null}
         <Field label="Holding period" value={p.holdingPeriod} min={1} max={30} step={1} onChange={(v) => set("holdingPeriod", v)} format={(v) => `${v} yr`} />
         <p className="text-muted text-sm leading-relaxed">
-          Weighted borrow {d.weightedBorrowBps.toFixed(0)} bps on {d.shortExposure.toFixed(2)}× short =
-          {" "}{formatPct(d.borrowCost, 2)} of NAV. Gross return {formatPct(d.grossReturn, 2)} ={" "}
-          {p.netExposure.toFixed(1)} × {formatPct(p.equityBeta, 1)} beta + {formatPct(p.grossAlpha, 1)} alpha.
-          No short rebate in that sum.
+          {p.showShortRebate ? (
+            <>
+              Gross return {d.grossReturn.toFixed(2)}% = {p.netExposure.toFixed(1)} × {p.equityBeta.toFixed(1)}% beta + {p.grossAlpha.toFixed(1)}% alpha + rebate {d.rebateIncome.toFixed(2)}% − financing {d.financingCost.toFixed(2)}%. Short proceeds earn the risk-free rate minus borrow minus the PB spread. The long above NAV pays the risk-free rate plus a PB spread. There is no idle cash. Debit {d.marginDebit.toFixed(2)}×.
+            </>
+          ) : (
+            <>
+              Weighted borrow {d.weightedBorrowBps.toFixed(0)} bps on {d.shortExposure.toFixed(2)}× short = {formatPct(d.borrowCost, 2)} of NAV. Gross return {formatPct(d.grossReturn, 2)} = {p.netExposure.toFixed(1)} × {formatPct(p.equityBeta, 1)} beta + {formatPct(p.grossAlpha, 1)} alpha. No short rebate in that sum.
+            </>
+          )}
         </p>
       </aside>
     </div>
