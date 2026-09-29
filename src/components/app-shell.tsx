@@ -70,9 +70,6 @@ export function AppShell({ urlTab }: { urlTab?: TabId }) {
             <br />
             Misallocation
           </h1>
-          <p className="mt-5 font-ui text-base font-bold tracking-[0.16em] text-navy uppercase sm:text-lg">
-            Author of the calculator and the essay
-          </p>
           <p className="text-muted mt-6 font-ui text-sm font-semibold tracking-kicker uppercase">
             The Causal Barbell — Part 1
           </p>
