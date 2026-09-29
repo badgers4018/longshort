@@ -55,25 +55,30 @@ export function AppShell({ urlTab }: { urlTab?: TabId }) {
   return (
     <main className="min-h-dvh bg-paper font-ui text-navy">
       <div className="mx-auto w-full max-w-5xl px-5 pt-10 pb-20 sm:px-8 sm:pt-14">
-        <header className="mb-10 text-center">
+        <header className="mb-12 text-center">
           <img
             src="/logo.png"
             alt=""
             width={320}
             height={320}
-            className="mx-auto size-20 select-none sm:size-24"
+            className="mx-auto size-28 select-none sm:size-36"
             draggable={false}
             aria-hidden="true"
           />
-          <div className="mt-6 font-ui text-xs font-semibold tracking-mark text-navy uppercase">
-            Capital Misallocation
-          </div>
-          <p className="text-muted mt-3 font-ui text-sm font-medium tracking-kicker uppercase">
+          <h1 className="mt-5 font-display text-[clamp(3.25rem,11vw,6.75rem)] leading-[0.86] font-bold tracking-[-0.035em] text-ink">
+            Capital
+            <br />
+            Misallocation
+          </h1>
+          <p className="mt-5 font-ui text-base font-bold tracking-[0.16em] text-navy uppercase sm:text-lg">
+            Author of the calculator and the essay
+          </p>
+          <p className="text-muted mt-6 font-ui text-sm font-semibold tracking-kicker uppercase">
             The Causal Barbell — Part 1
           </p>
-          <h1 className="mt-2 font-display text-display font-medium tracking-[-0.025em] text-navy leading-[1.15]">
+          <p className="mt-1 font-display text-2xl font-medium tracking-[-0.02em] text-navy sm:text-3xl">
             {PART_TITLE}
-          </h1>
+          </p>
           <p className="text-muted mx-auto mt-4 max-w-md text-base leading-7">
             How much alpha does your hedge fund need to beat the index? You supply the assumptions. The
             arithmetic does not negotiate.
