@@ -73,8 +73,8 @@ export function AppShell({ urlTab }: { urlTab?: TabId }) {
           <p className="mt-6 font-display text-2xl font-medium tracking-[-0.02em] text-navy sm:text-3xl">
             {PART_TITLE}
           </p>
-          <p className="text-muted mt-2 font-ui text-sm font-semibold tracking-kicker uppercase">
-            The Causal Barbell; Part 1
+          <p className="text-muted mt-2 font-ui text-base font-bold tracking-kicker uppercase">
+            The Causal Barbell: Part 1
           </p>
           <p className="text-muted mx-auto mt-4 max-w-md text-base leading-7">
             How much alpha does your hedge fund need to beat the index? You supply the assumptions. The
@@ -201,7 +201,7 @@ export function AppShell({ urlTab }: { urlTab?: TabId }) {
             Nobody can attack assumptions that are yours.
           </p>
           <p className="text-subtle mt-3 font-ui text-sm tracking-footer">
-            Capital Misallocation — The Multiplicative Indictment; The Causal Barbell; Part 1 · Monte Carlo seed 20260910 · Shiller real total returns, 1871–2023
+            Capital Misallocation — The Multiplicative Indictment; The Causal Barbell: Part 1 · Monte Carlo seed 20260910 · Shiller real total returns, 1871–2023
           </p>
         </footer>
       </div>
