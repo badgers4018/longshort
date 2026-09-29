@@ -65,7 +65,7 @@ export function AppShell({ urlTab }: { urlTab?: TabId }) {
             draggable={false}
             aria-hidden="true"
           />
-          <h1 className="mt-5 font-display text-[clamp(3.25rem,11vw,6.75rem)] leading-[0.86] font-bold tracking-[-0.035em] text-ink">
+          <h1 className="mt-5 font-display text-[2.25rem] leading-[0.9] font-bold tracking-[-0.03em] text-ink sm:text-[2.8125rem]">
             Capital
             <br />
             Misallocation
