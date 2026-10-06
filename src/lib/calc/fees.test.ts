@@ -92,6 +92,37 @@ test("essay mode ignores the cash rate", () => {
   assert.equal(a.netArith, moved.netArith);
 });
 
+test("waterfall pieces sum to net geometric", () => {
+  for (const rebate of [false, true]) {
+    const d = decompose({ ...input, showShortRebate: rebate });
+    const stockLoan = rebate ? 0 : d.borrowCost;
+    const sum =
+      d.betaContribution +
+      input.grossAlpha +
+      d.rebateIncome -
+      d.financingCost -
+      d.mgmt -
+      d.incentive -
+      d.passThrough -
+      stockLoan -
+      d.varDrag;
+    assert.ok(Math.abs(sum - d.netGeo) < 1e-9, `residual ${sum - d.netGeo}`);
+  }
+});
+
+test("no netting stays at least the netted bill when the rebate is large", () => {
+  const rich = { ...input, showShortRebate: true, riskFree: 6, rebateSpreadBps: 0, debitSpreadBps: 0 };
+  const open = decompose({ ...rich, podNetting: false });
+  const netted = decompose(rich);
+  assert.ok(open.incentive + 1e-9 >= netted.incentive, `${open.incentive} < ${netted.incentive}`);
+});
+
+test("rebate book break-even matches the index geometric", () => {
+  const be = breakEvenAlpha({ ...input, showShortRebate: true });
+  const d = decompose({ ...input, showShortRebate: true, grossAlpha: be });
+  assert.ok(Math.abs(d.netGeo - d.betaGeo) < 0.02, `${d.netGeo} vs ${d.betaGeo}`);
+});
+
 test("cash at zero makes no-idle-cash worse than the essay book", () => {
   const essay = decompose(input);
   const starved = decompose({ ...input, showShortRebate: true, riskFree: 0 });

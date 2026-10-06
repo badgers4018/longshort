@@ -100,18 +100,22 @@ export function FeeTab() {
           />
         </div>
         <p className="text-muted text-sm leading-relaxed">
-          {p.netExposure < 0.95
-            ? `Move net exposure to 1.0. The extra ${formatPct(leverageGap)} is the ${p.netExposure.toFixed(1)}× net and the borrow on the short — leverage, not the ${p.mgmtFee.toFixed(1)}-and-${p.incentiveFee.toFixed(0)}.`
-            : "Net is 1.0 — this is the unlevered book. What's left of break-even is fees and ½σ² drag."}
+          {p.netExposure >= 0.95
+            ? "Net is 1.0 — this is the unlevered book. What's left of break-even is fees and ½σ² drag."
+            : p.showShortRebate
+              ? leverageGap > 0
+                ? `Move net exposure to 1.0. The extra ${formatPct(leverageGap)} is beta this book does not own. Borrow sits inside the short rebate, so it is not a second charge.`
+                : `The short rebate more than covers the missing beta. Break-even is ${formatPct(-leverageGap)} lower than the unlevered book.`
+              : `Move net exposure to 1.0. The extra ${formatPct(leverageGap)} is the ${p.netExposure.toFixed(1)}× net and the borrow on the short — leverage, not the ${p.mgmtFee.toFixed(1)}-and-${p.incentiveFee.toFixed(0)}.`}
         </p>
 
         <div>
           <h3 className="mb-3 font-ui text-sm font-medium tracking-kicker text-muted uppercase">From gross alpha to net geometric</h3>
           <div className="h-56 rounded-md bg-surface pt-2 shadow-[var(--shadow-border)] md:h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={waterfall} margin={{ top: 8, right: 8, left: -12, bottom: 8 }}>
+              <BarChart data={waterfall} margin={{ top: 8, right: 8, left: 4, bottom: 8 }}>
                 <CartesianGrid stroke={LINE} vertical={false} />
-                <XAxis dataKey="name" tick={CHART_TICK} interval={0} height={52} />
+                <XAxis dataKey="name" tick={CHART_TICK} interval={0} height={64} angle={-32} textAnchor="end" />
                 <YAxis tick={CHART_TICK} tickFormatter={(v) => `${Number(v).toFixed(1)}%`} />
                 <ReferenceLine
                   y={d.betaGeo}

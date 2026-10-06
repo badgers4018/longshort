@@ -65,9 +65,14 @@ export function incentivePct(input: FeeInputs, gross: number, fixedCosts: number
     return r * Math.max(0, gross - fixedCosts);
   }
   // No fund-level netting: winning sleeves pay even when losers offset.
-  // Charge 20% on gross alpha in full and on the positive beta contribution,
-  // without deducting costs. Strictly ≥ the netted bill whenever costs > 0.
-  return r * Math.max(0, input.grossAlpha) + r * Math.max(0, input.netExposure * input.equityBeta);
+  // Charge the incentive on alpha, on the positive beta contribution, and on
+  // a positive short rebate, without deducting costs. Strictly ≥ the netted bill.
+  const rebate = input.showShortRebate ? Math.max(0, carryPct(input).rebateIncome) : 0;
+  return (
+    r * Math.max(0, input.grossAlpha) +
+    r * Math.max(0, input.netExposure * input.equityBeta) +
+    r * rebate
+  );
 }
 
 function wealthFromGeo(geoPct: number, years: number) {
@@ -167,9 +172,10 @@ export function breakEvenAlpha(input: FeeInputs): number {
   let lo = -10;
   let hi = 50;
   const geoAt = (alpha: number) => decompose({ ...input, grossAlpha: alpha }).netGeo;
-  // Ensure the bracket contains the root.
-  while (geoAt(lo) > target) lo -= 5;
-  while (geoAt(hi) < target) hi += 5;
+  let guard = 0;
+  while (geoAt(lo) > target && guard++ < 40) lo -= 5;
+  guard = 0;
+  while (geoAt(hi) < target && guard++ < 40) hi += 5;
   for (let i = 0; i < 48; i++) {
     const mid = (lo + hi) / 2;
     if (geoAt(mid) >= target) hi = mid;
